@@ -2,6 +2,11 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "mars_base_10/launch_pad"
+require "mars_base_10/comm_central"
 
-MarsBase10::LaunchPad.activate
+begin
+  cc = MarsBase10::CommCentral.new
+  cc.activate
+ensure
+  cc.shutdown
+end
