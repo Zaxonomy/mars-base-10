@@ -1,4 +1,5 @@
 *.gem
+_config*.yml
 /.bundle/
 /.yardoc
 /_yardoc/
