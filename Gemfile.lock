@@ -3,6 +3,10 @@ PATH
   specs:
     mars-base-10 (0.1.0)
       curses (~> 1.4)
+      pastel (~> 0.8)
+      sorted_set (~> 1.0)
+      thor (~> 1.1)
+      tty-font (~> 0.5)
       urbit-api (~> 0.2)
 
 GEM
@@ -46,12 +50,15 @@ GEM
     parallel (1.20.1)
     parser (3.0.2.0)
       ast (~> 2.4.1)
+    pastel (0.8.0)
+      tty-color (~> 0.5)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (4.0.6)
     rainbow (3.0.0)
     rake (13.0.6)
+    rbtree (0.4.4)
     regexp_parser (2.1.1)
     rexml (3.2.5)
     rspec (3.10.0)
@@ -80,6 +87,13 @@ GEM
       parser (>= 3.0.1.1)
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
+    set (1.0.1)
+    sorted_set (1.0.3)
+      rbtree
+      set (~> 1.0)
+    thor (1.1.0)
+    tty-color (0.6.0)
+    tty-font (0.5.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
