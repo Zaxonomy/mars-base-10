@@ -6,11 +6,8 @@ module MarsBase10
   class Error < StandardError; end
 
   class CommCentral
-    attr_accessor :ship, :viewport
-
     def initialize(config_filename:)
-      @ship = Urbit.connect(config_file: config_filename)
-      @viewport = MarsBase10::ViewPort.new on_ship: @ship
+      @viewport = MarsBase10::ViewPort.new ship: Urbit.connect(config_file: config_filename)
     end
 
     def activate
@@ -19,6 +16,12 @@ module MarsBase10
 
     def shutdown
       self.viewport.close
+    end
+
+    private
+
+    def viewport
+      @viewport
     end
   end
 end

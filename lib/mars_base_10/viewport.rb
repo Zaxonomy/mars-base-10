@@ -3,34 +3,37 @@ require 'curses'
 require 'sorted_set'
 
 module MarsBase10
-  class ViewPortSubject
-    attr_accessor :cols, :contents, :rows
-    def initialize(on:)
-      @cols     = on.graph_names.inject(0) {|a, n| n.length > a ? n.length : a}
-      @contents = on.graph_names
+  class Pane
+  end
+
+  class Subject
+    attr_accessor :cols, :contents, :rows, :title
+    def initialize(with_ship:)
+      @contents = with_ship.graph_names
+      @cols     = @contents.inject(0) {|a, n| n.length > a ? n.length : a}
       @rows     = @contents.size
+      @title    = "Graphs"
     end
   end
 
   class ViewPort
-    attr_accessor :draw_col, :draw_row, :index, :subject, :title, :win
+    attr_accessor :draw_col, :draw_row, :index, :subject, :win
 
-    def initialize(on_ship:)
+    def initialize(ship:)
       Curses.init_screen
       Curses.noecho   # Do not echo characters typed by the user.
       Curses.start_color if Curses.has_colors?
       @draw_col = 1
       @draw_row = 1
       @index = 1
-      @subject = ViewPortSubject.new on: on_ship
-      @title = "Graphs"
+      @subject = Subject.new with_ship: ship
     end
 
     def clear
       @win = Curses::Window.new(self.subject.rows + 2, self.subject.cols + 6, 0, 0)
       self.win.box
       self.win.setpos(0, 2)
-      self.win.addstr(" #{self.title} ")
+      self.win.addstr(" #{self.subject.title} ")
       self.draw_row = 1
       self.draw_col = 1
     end
