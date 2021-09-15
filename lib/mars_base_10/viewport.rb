@@ -1,18 +1,10 @@
 # frozen_string_literal: true
 require 'curses'
+
 require_relative 'pane'
+require_relative 'subject'
 
 module MarsBase10
-  class Subject
-    attr_accessor :cols, :contents, :rows, :title
-    def initialize(wrapping:)
-      @contents = wrapping.graph_names
-      @cols     = @contents.inject(0) {|a, n| n.length > a ? n.length : a}
-      @rows     = @contents.size
-      @title    = "Graphs"
-    end
-  end
-
   class ViewPort
     attr_accessor :panes
 
@@ -22,8 +14,8 @@ module MarsBase10
       Curses.start_color if Curses.has_colors?
       @panes = []
       @panes << (MarsBase10::Pane.new displaying: (Subject.new wrapping: ship),
-                          at_row:     self.min_row,
-                          at_col:     self.min_col)
+                                      at_row:     self.min_row,
+                                      at_col:     self.min_col)
     end
 
     def close
