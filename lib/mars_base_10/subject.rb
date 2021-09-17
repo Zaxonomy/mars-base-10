@@ -5,8 +5,8 @@ module MarsBase10
     attr_accessor :first_row, :scroll_limit
     attr_reader   :contents, :title
 
-    def initialize(title: 'Untitled', wrapping:)
-      @contents  = wrapping
+    def initialize(title: 'Untitled', contents:)
+      @contents  = contents
       @first_row = 0
       @title = title
     end
@@ -36,8 +36,8 @@ module MarsBase10
   end
 
   class ShipSubject < MarsBase10::Subject
-    def initialize(wrapping:)
-      @contents  = wrapping.graph_names
+    def initialize(ship:)
+      @contents  = ship.graph_names
       @first_row = 0
       @title     = "Graphs"
     end

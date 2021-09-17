@@ -19,12 +19,12 @@ module MarsBase10
       Curses.start_color if Curses.has_colors?
 
       @panes = []
-      p1 = (MarsBase10::Pane.new displaying: (ShipSubject.new wrapping: ship),
+      p1 = (MarsBase10::Pane.new displaying: (ShipSubject.new ship: ship),
                                  at_row:     self.min_row,
                                  at_col:     self.min_col)
       @panes << p1
 
-      p2 = (MarsBase10::Pane.new displaying: (Subject.new title: 'Nodes', wrapping: ['aaaaaaaaaaaaaaaaaaaaaa', 'bbbbbbbbbbb', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm']),
+      p2 = (MarsBase10::Pane.new displaying: (Subject.new title: 'Nodes', contents: ['aaaaaaaaaaaaaaaaaaaaaa', 'bbbbbbbbbbb', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm']),
                                  at_row:     self.min_row,
                                  at_col:     p1.last_col + 1)
       @panes << p2
