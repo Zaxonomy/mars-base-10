@@ -3,7 +3,7 @@ require 'curses'
 
 module MarsBase10
   class Pane
-    attr_accessor :draw_row, :draw_col, :index, :subject, :win
+    attr_accessor :draw_row, :draw_col, :index, :subject
     attr_reader   :edge_col, :top_row
 
     def initialize(displaying:, at_row:, at_col:)
@@ -11,7 +11,7 @@ module MarsBase10
       @edge_col = at_col
       @index    = 0
       @subject  = displaying
-      @win      = Curses::Window.new(self.last_row, self.last_col, at_row, at_col)
+      @win      = nil
     end
 
     def draw
@@ -105,6 +105,27 @@ module MarsBase10
 
       self.index = i if (i <= self.max_contents_rows) && (i >= 0)
     end
+
+    def win
+      return @win if @win
+      @win = Curses::Window.new(self.last_row, self.last_col, self.top_row, self.edge_col)
+    end
   end
 
+  class VariablePane < Pane
+    attr_reader :viewport
+
+    def initialize(displaying:, at_row:, at_col:, viewport:)
+      super(displaying: displaying, at_row: at_row, at_col: at_col)
+      @viewport = viewport
+    end
+
+    def last_col
+      self.viewport.max_cols - self.edge_col
+    end
+
+    def last_row
+      self.viewport.max_rows
+    end
+  end
 end
