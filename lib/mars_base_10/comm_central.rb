@@ -7,7 +7,9 @@ module MarsBase10
 
   class CommCentral
     def initialize(config_filename:)
-      @rover = MarsBase10::GraphRover.new ship: Urbit.connect(config_file: config_filename)
+      @viewport = Viewport.new
+      @rover    = GraphRover.new ship: Urbit.connect(config_file: config_filename),
+                                             viewport: @viewport
     end
 
     def activate

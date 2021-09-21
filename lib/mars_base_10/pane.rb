@@ -18,12 +18,12 @@ module MarsBase10
       self.prepare_for_writing_contents
 
       (0..(self.max_contents_rows - 1)).each do |item|
-        self.win.setpos(self.draw_row, self.draw_col)
+        self.window.setpos(self.draw_row, self.draw_col)
         # The string here is the gutter followed by the window contents. improving the gutter is tbd.
-        win.attron(Curses::A_REVERSE) if item == self.index
-        self.win.addstr("#{"%2d" % item} #{self.subject.at index: item}")
-        win.attroff(Curses::A_REVERSE) if item == self.index
-        self.win.clrtoeol
+        self.window.attron(Curses::A_REVERSE) if item == self.index
+        self.window.addstr("#{"%2d" % item} #{self.subject.at index: item}")
+        self.window.attroff(Curses::A_REVERSE) if item == self.index
+        self.window.clrtoeol
         self.draw_row += 1
       end
 
@@ -31,13 +31,13 @@ module MarsBase10
     end
 
     def draw_border
-      self.win.box
+      self.window.box
       self.draw_title
     end
 
     def draw_title
-      self.win.setpos(0, 2)
-      self.win.addstr(" #{self.subject.title} (#{self.subject.rows} total) ")
+      self.window.setpos(0, 2)
+      self.window.addstr(" #{self.subject.title} (#{self.subject.rows} total) ")
     end
 
     def first_col
@@ -70,7 +70,7 @@ module MarsBase10
     end
 
     def process
-      key = win.getch.to_s
+      key = self.window.getch.to_s
       case key
       when 'j'
         self.set_row(self.index + 1)
@@ -106,7 +106,7 @@ module MarsBase10
       self.index = i if (i <= self.max_contents_rows) && (i >= 0)
     end
 
-    def win
+    def window
       return @win if @win
       @win = Curses::Window.new(self.last_row, self.last_col, self.top_row, self.edge_col)
     end

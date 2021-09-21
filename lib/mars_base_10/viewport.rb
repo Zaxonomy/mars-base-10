@@ -8,9 +8,9 @@ module MarsBase10
   class GraphRover
     attr_accessor :panes, :viewport
 
-    def initialize(ship:)
+    def initialize(ship:, viewport:)
       @ship = ship
-      @viewport = Viewport.new
+      @viewport = viewport
 
       @panes = []
       @p1 = @viewport.add_pane(subject: (ShipSubject.new ship: ship))
@@ -40,6 +40,9 @@ module MarsBase10
       Curses.noecho   # Do not echo characters typed by the user.
       Curses.start_color if Curses.has_colors?
       @panes = []
+
+      # this is the whole visible drawing surface.
+      # we don't ever draw on this, but we need it for reference.
       @win = Curses::Window.new 0, 0, 0, 0
     end
 
@@ -91,7 +94,7 @@ module MarsBase10
       loop do
         self.panes.each do |pane|
           pane.draw
-          pane.win.refresh
+          pane.window.refresh
         end
         self.active_pane.process
       end
