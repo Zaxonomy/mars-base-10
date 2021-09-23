@@ -4,14 +4,15 @@ require 'curses'
 module MarsBase10
   class Pane
     attr_accessor :draw_row, :draw_col, :index, :subject
-    attr_reader   :edge_col, :top_row
+    attr_reader   :edge_col, :top_row, :viewport
 
-    def initialize(displaying:, at_row:, at_col:)
+    def initialize(displaying:, at_row:, at_col:, viewport:)
       @top_row  = at_row
       @edge_col = at_col
       @index    = 0
       @subject  = displaying
       @win      = nil
+      @viewport = viewport
     end
 
     def draw
@@ -72,6 +73,8 @@ module MarsBase10
     def process
       key = self.window.getch.to_s
       case key
+      when [0..9]
+        self.set_row(key.to_i)
       when 'j'
         self.set_row(self.index + 1)
       when 'k'
@@ -79,7 +82,7 @@ module MarsBase10
       when 'q'
         exit 0
       else
-        self.set_row(key.to_i)
+        self.viewport.send key: key
       end
     end
 
@@ -113,13 +116,6 @@ module MarsBase10
   end
 
   class VariablePane < Pane
-    attr_reader :viewport
-
-    def initialize(displaying:, at_row:, at_col:, viewport:)
-      super(displaying: displaying, at_row: at_row, at_col: at_col)
-      @viewport = viewport
-    end
-
     def last_col
       self.viewport.max_cols - self.edge_col
     end

@@ -40,25 +40,31 @@ module MarsBase10
       Curses.noecho   # Do not echo characters typed by the user.
       Curses.start_color if Curses.has_colors?
       @panes = []
+      @active_pane = nil
 
       # this is the whole visible drawing surface.
       # we don't ever draw on this, but we need it for reference.
       @win = Curses::Window.new 0, 0, 0, 0
     end
 
+    def activate(pane:)
+      @active_pane = pane
+    end
+
     #
     # This is the pane in the Viewport which is actively accepting keyboard input.
     #
     def active_pane
-      self.panes.first
+      @active_pane
     end
 
     def add_pane(subject:, at_row: self.min_row, at_col: self.min_col)
       p = MarsBase10::Pane.new displaying: subject,
                                at_row:     at_row,
-                               at_col:     at_col
+                               at_col:     at_col,
+                               viewport:   self
       @panes << p
-      p
+      @active_pane = p
     end
 
     def add_right_pane(subject:, at_row: self.min_row, at_col: self.min_col)
@@ -98,6 +104,14 @@ module MarsBase10
         end
         self.active_pane.process
       end
+    end
+
+    #
+    # Called by a pane in this viewport for bubbling a key press up
+    # to the controller.
+    #
+    def send(key:)
+      self.activate pane: self.panes[1]
     end
   end
 end
