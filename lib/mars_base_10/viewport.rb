@@ -34,18 +34,26 @@ module MarsBase10
       @active_pane
     end
 
-    def add_pane(subject:, at_row: self.min_row, at_col: self.min_col)
-      p = MarsBase10::Pane.new displaying: subject,
-                               at_row:     at_row,
+    #
+    # Adds a new drawable area (Pane) to the viewport.
+    # By default it is anchored to the top left. (min_row, min_col)
+    #
+    def add_pane(at_row: self.min_row, at_col: self.min_col)
+      p = MarsBase10::Pane.new at_row:     at_row,
                                at_col:     at_col,
                                viewport:   self
       @panes << p
       @active_pane = p
     end
 
-    def add_right_pane(subject:, at_row: self.min_row, at_col: self.min_col)
-      p = VariablePane.new displaying: subject,
-                           at_row:     at_row,
+    #
+    # Adds a new variable drawable area (VariablePane) to the viewport.
+    #
+    # The caller must specify the upper left corner (at_row, at_col) but
+    #   after that it will expand to the width and height of the viewport.
+    #
+    def add_right_pane(at_row: self.min_row, at_col: self.min_col)
+      p = VariablePane.new at_row:     at_row,
                            at_col:     at_col,
                            viewport:   self
       @panes << p

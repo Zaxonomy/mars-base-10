@@ -3,14 +3,14 @@ require 'curses'
 
 module MarsBase10
   class Pane
-    attr_accessor :draw_row, :draw_col, :index, :subject
-    attr_reader   :edge_col, :top_row, :viewport
+    attr_accessor :draw_row, :draw_col, :index
+    attr_reader   :edge_col, :subject, :top_row, :viewport
 
-    def initialize(displaying:, at_row:, at_col:, viewport:)
+    def initialize(at_row:, at_col:, viewport:)
       @top_row  = at_row
       @edge_col = at_col
       @index    = 0
-      @subject  = displaying
+      @subject  = nil
       @win      = nil
       @viewport = viewport
     end
@@ -107,6 +107,10 @@ module MarsBase10
       end
 
       self.index = i if (i <= self.max_contents_rows) && (i >= 0)
+    end
+
+    def viewing(subject:)
+      @subject = subject
     end
 
     def window

@@ -10,10 +10,11 @@ module MarsBase10
       @viewport = viewport
 
       @panes = []
-      @p1 = @viewport.add_pane(subject: (ShipSubject.new ship: ship))
+      @graph_list_pane = @viewport.add_pane
+      @graph_list_pane.viewing subject: (ShipSubject.new ship: ship)
 
-      s = Subject.new title: 'Nodes', contents: ['aaaaaaaaaaaaaaaaaaaaaa', 'bbbbbbbbbbb', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm']
-      @p2 = @viewport.add_right_pane(subject: s, at_col: @p1.last_col + 1)
+      @node_list_pane = @viewport.add_right_pane(at_col: @graph_list_pane.last_col)
+      @node_list_pane.viewing subject: (Subject.new title: 'Nodes', contents: ['aaaaaaaaaaaaaaaaaaaaaa', 'bbbbbbbbbbb', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'])
     end
 
     def start
