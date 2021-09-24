@@ -32,9 +32,9 @@ module MarsBase10
       (0..(self.max_contents_rows - 1)).each do |item|
         self.window.setpos(self.draw_row, self.draw_col)
         # The string here is the gutter followed by the window contents. improving the gutter is tbd.
-        self.window.attron(Curses::A_REVERSE) if item == self.index
-        self.window.addstr("#{"%2d" % item} #{self.subject.at index: item}")
-        self.window.attroff(Curses::A_REVERSE) if item == self.index
+        self.window.attron(Curses::A_REVERSE) if (self == self.viewport.active_pane && item == self.index)
+        self.window.addstr("#{"%2d" % item}  #{self.subject.at index: item}")
+        self.window.attroff(Curses::A_REVERSE) # if item == self.index
         self.window.clrtoeol
         self.draw_row += 1
       end
@@ -91,14 +91,14 @@ module MarsBase10
     def process
       key = self.window.getch.to_s
       case key
-      when [0..9]
-        self.set_row(key.to_i)
       when 'j'
         self.set_row(self.index + 1)
       when 'k'
         self.set_row(self.index - 1)
       when 'q'
         exit 0
+      when ('0'..'9')
+        self.set_row(key.to_i)
       else
         self.subject.controller.send key: key
       end
@@ -119,12 +119,12 @@ module MarsBase10
        i = 0
       end
 
-      if (i > 9)
+      if (i >= self.max_contents_rows)
         self.subject.scroll_down
-        i = 9
+        i -= 1
       end
 
-      self.index = i if (i <= self.max_contents_rows) && (i >= 0)
+      self.index = i # if (i <= self.max_contents_rows) && (i >= 0)
     end
 
     def viewing(subject:)
@@ -144,6 +144,10 @@ module MarsBase10
 
     def last_row
       self.viewport.max_rows
+    end
+
+    def max_contents_rows
+      [(self.last_row - 2), self.subject.rows].min
     end
   end
 end

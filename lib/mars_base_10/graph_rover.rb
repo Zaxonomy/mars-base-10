@@ -3,7 +3,7 @@ require_relative 'subject'
 
 module MarsBase10
   class GraphRover
-    attr_accessor :panes, :viewport
+    attr_reader :panes, :ship, :viewport
 
     def initialize(ship:, viewport:)
       @ship = ship
@@ -15,7 +15,7 @@ module MarsBase10
 
       @node_list_pane = @viewport.add_right_pane(at_col: @graph_list_pane.last_col)
       @node_list_pane.viewing subject: (Subject.new title:      'Nodes',
-                                                    contents:   ['aaaaaaaaaaaaaaaaaaaaaa', 'bbbbbbbbbbb', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'],
+                                                    contents:   ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'],
                                                     controller: self)
     end
 
@@ -25,11 +25,10 @@ module MarsBase10
     def send(key:)
       case key
       when 'i'    # Inspect
-        if 1 == @graph_list_pane.index
-          @node_list_pane.subject.title = "Nodes of #{@graph_list_pane.subject.at index: 1}"
-          @node_list_pane.clear
-          @node_list_pane.subject.contents = ["This will be a list of nodes"]
-        end
+        resource = @graph_list_pane.subject.at index: @graph_list_pane.index
+        @node_list_pane.subject.title = "Nodes of #{resource}"
+        @node_list_pane.clear
+        @node_list_pane.subject.contents = @graph_list_pane.subject.node_list resource: resource
         self.viewport.activate pane: @node_list_pane
       when 'g'
         self.viewport.activate pane: @graph_list_pane

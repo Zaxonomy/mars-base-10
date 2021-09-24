@@ -49,6 +49,11 @@ module MarsBase10
   class ShipSubject < MarsBase10::Subject
     def initialize(ship:, controller:)
       super(title: "Graphs", contents: ship.graph_names, controller: controller)
+      @ship = ship
+    end
+
+    def node_list(resource:)
+      @ship.graph(resource: resource).newest_nodes(count: 20).map {|node| node.index}
     end
   end
 end
