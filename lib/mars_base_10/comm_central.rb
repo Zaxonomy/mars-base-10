@@ -1,6 +1,8 @@
 # frozen_string_literal: true
-require 'mars_base_10/viewport'
 require 'urbit/urbit'
+
+require_relative  'graph_rover'
+require_relative  'viewport'
 
 module MarsBase10
   class Error < StandardError; end
