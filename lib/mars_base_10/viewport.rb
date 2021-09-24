@@ -89,13 +89,5 @@ module MarsBase10
         self.active_pane.process
       end
     end
-
-    #
-    # Called by a pane in this viewport for bubbling a key press up
-    # to the controller.
-    #
-    def send(key:)
-      self.activate pane: self.panes[1]
-    end
   end
 end

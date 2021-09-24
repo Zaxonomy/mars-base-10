@@ -3,12 +3,13 @@
 module MarsBase10
   class Subject
     attr_accessor :first_row, :scroll_limit
-    attr_reader   :contents, :title
+    attr_reader   :contents, :controller, :title
 
-    def initialize(title: 'Untitled', contents:)
-      @contents  = contents
-      @first_row = 0
-      @title = title
+    def initialize(title: 'Untitled', contents:, controller:)
+      @contents   = contents
+      @controller = controller
+      @first_row  = 0
+      @title      = title
     end
 
     # Returns the item at: the index: relative to the first_row.
@@ -36,10 +37,8 @@ module MarsBase10
   end
 
   class ShipSubject < MarsBase10::Subject
-    def initialize(ship:)
-      @contents  = ship.graph_names
-      @first_row = 0
-      @title     = "Graphs"
+    def initialize(ship:, controller:)
+      super(title: "Graphs", contents: ship.graph_names, controller: controller)
     end
   end
 end

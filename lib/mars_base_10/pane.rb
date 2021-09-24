@@ -82,7 +82,7 @@ module MarsBase10
       when 'q'
         exit 0
       else
-        self.viewport.send key: key
+        self.subject.controller.send key: key
       end
     end
 
