@@ -3,7 +3,7 @@
 module MarsBase10
   class Subject
     attr_accessor :first_row, :scroll_limit
-    attr_reader   :contents, :controller, :title
+    attr_reader   :controller, :title
 
     def initialize(title: 'Untitled', contents:, controller:)
       @contents   = contents
@@ -20,6 +20,16 @@ module MarsBase10
     def cols
       return @cols if @cols
       @cols = @contents.inject(0) {|a, n| n.length > a ? n.length : a}
+    end
+
+    def contents
+      @contents
+    end
+
+    def contents=(a_contents_array)
+      @rows = nil
+      $cols = nil
+      @contents = a_contents_array
     end
 
     def rows

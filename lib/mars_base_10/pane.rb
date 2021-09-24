@@ -15,6 +15,17 @@ module MarsBase10
       @viewport = viewport
     end
 
+    def clear
+      self.prepare_for_writing_contents
+      (0..(self.max_contents_rows - 1)).each do |item|
+        self.window.setpos(self.draw_row, self.draw_col)
+        self.window.addstr("")
+        self.window.clrtoeol
+        self.draw_row += 1
+      end
+      self.draw_border
+    end
+
     def draw
       self.prepare_for_writing_contents
 
@@ -62,7 +73,7 @@ module MarsBase10
     end
 
     def max_contents_rows
-      [10, (self.subject.rows + 3)].min
+      [10, self.subject.rows].min
     end
 
     def prepare_for_writing_contents
@@ -70,6 +81,13 @@ module MarsBase10
       self.draw_col = self.first_col
     end
 
+    #
+    # process blocks and waits for a keypress.
+    #
+    # this method handles only the "default" keypresses which all controllers/subjects
+    #   must support. Any unrecognized key is bubbled to the controller for more specific
+    #   handling.
+    #
     def process
       key = self.window.getch.to_s
       case key

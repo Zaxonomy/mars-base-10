@@ -23,6 +23,13 @@ module MarsBase10
     # Called by a pane in this controller for bubbling a key press up
     #
     def send(key:)
+      case key
+      when 'i'    # Inspect
+        if 1 == @graph_list_pane.index
+          @node_list_pane.clear
+          @node_list_pane.subject.contents = ["Inspecting graph #1 - #{@graph_list_pane.subject.at index: 1}"]
+        end
+      end
       self.viewport.activate pane: @node_list_pane
     end
 
