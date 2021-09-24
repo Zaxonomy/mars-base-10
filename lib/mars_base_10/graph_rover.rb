@@ -26,11 +26,14 @@ module MarsBase10
       case key
       when 'i'    # Inspect
         if 1 == @graph_list_pane.index
+          @node_list_pane.subject.title = "Nodes of #{@graph_list_pane.subject.at index: 1}"
           @node_list_pane.clear
-          @node_list_pane.subject.contents = ["Inspecting graph #1 - #{@graph_list_pane.subject.at index: 1}"]
+          @node_list_pane.subject.contents = ["This will be a list of nodes"]
         end
+        self.viewport.activate pane: @node_list_pane
+      when 'g'
+        self.viewport.activate pane: @graph_list_pane
       end
-      self.viewport.activate pane: @node_list_pane
     end
 
     def start

@@ -2,8 +2,8 @@
 
 module MarsBase10
   class Subject
-    attr_accessor :first_row, :scroll_limit
-    attr_reader   :controller, :title
+    attr_accessor :first_row, :scroll_limit, :title
+    attr_reader   :controller
 
     def initialize(title: 'Untitled', contents:, controller:)
       @contents   = contents
