@@ -46,6 +46,14 @@ module MarsBase10
       @active_pane = p
     end
 
+    def add_left_pane(at_row: self.min_row, right_edge: self.min_col)
+      p = VariableLeftPane.new at_row:     at_row,
+                               right_edge: right_edge,
+                               viewport:   self
+      @panes << p
+      p
+    end
+
     #
     # Adds a new variable drawable area (VariablePane) to the viewport.
     #
@@ -53,9 +61,9 @@ module MarsBase10
     #   after that it will expand to the width and height of the viewport.
     #
     def add_right_pane(at_row: self.min_row, at_col: self.min_col)
-      p = VariablePane.new at_row:     at_row,
-                           at_col:     at_col,
-                           viewport:   self
+      p = VariableRightPane.new at_row:     at_row,
+                                at_col:     at_col,
+                                viewport:   self
       @panes << p
       p
     end
@@ -88,6 +96,14 @@ module MarsBase10
         end
         self.active_pane.process
       end
+    end
+
+    #
+    # Called by a pane in this viewport for bubbling a key press up
+    # to the controller.
+    #
+    def send(key:)
+      self.activate pane: self.panes[1]
     end
   end
 end

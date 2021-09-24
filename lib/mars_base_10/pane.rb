@@ -137,7 +137,26 @@ module MarsBase10
     end
   end
 
-  class VariablePane < Pane
+  class VariableLeftPane < Pane
+    def initialize(at_row:, right_edge:, viewport:)
+      super(at_row: at_row, at_col: 0, viewport: viewport)
+      @last_col = right_edge
+    end
+
+    def last_col
+      @last_col
+    end
+
+    def last_row
+      self.viewport.max_rows - self.top_row
+    end
+
+    def max_contents_rows
+      [(self.last_row - 2), self.subject.rows].min
+    end
+  end
+
+  class VariableRightPane < Pane
     def last_col
       self.viewport.max_cols - self.edge_col
     end

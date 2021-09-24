@@ -17,6 +17,11 @@ module MarsBase10
       @node_list_pane.viewing subject: (Subject.new title:      'Nodes',
                                                     contents:   ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'],
                                                     controller: self)
+
+      @node_view_pane = @viewport.add_left_pane(at_row: @graph_list_pane.last_row, right_edge: @graph_list_pane.last_col)
+      @node_view_pane.viewing subject: (Subject.new title:      'Node',
+                                                    contents:   ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'],
+                                                    controller: self)
     end
 
     #
