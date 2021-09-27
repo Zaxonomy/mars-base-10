@@ -1,27 +1,26 @@
 # frozen_string_literal: true
+
+require_relative 'ship'
 require_relative 'subject'
 
 module MarsBase10
   class GraphRover
     attr_reader :panes, :ship, :viewport
 
-    def initialize(ship:, viewport:)
-      @ship = ship
+    def initialize(ship_connection:, viewport:)
+      @ship = Ship.new connection: ship_connection
       @viewport = viewport
+      @viewport.controller = self
 
       @panes = []
       @graph_list_pane = @viewport.add_pane
-      @graph_list_pane.viewing subject: (ShipSubject.new ship: ship, controller: self)
+      @graph_list_pane.viewing subject: @ship.graph_names
 
       @node_list_pane = @viewport.add_right_pane(at_col: @graph_list_pane.last_col)
-      @node_list_pane.viewing subject: (Subject.new title:      'Nodes',
-                                                    contents:   ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'],
-                                                    controller: self)
+      @node_list_pane.viewing subject: @ship.node_list
 
       @node_view_pane = @viewport.add_left_pane(at_row: @graph_list_pane.last_row, right_edge: @graph_list_pane.last_col)
-      @node_view_pane.viewing subject: (Subject.new title:      'Node',
-                                                    contents:   ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'],
-                                                    controller: self)
+      @node_view_pane.viewing subject: @ship.node
     end
 
     #
@@ -31,14 +30,16 @@ module MarsBase10
       case key
       when 'i'    # Inspect
         resource = @graph_list_pane.subject.at index: @graph_list_pane.index
-        @node_list_pane.subject.title = "Nodes of #{resource}"
-        @node_list_pane.clear
-        @node_list_pane.subject.contents = @graph_list_pane.subject.node_list resource: resource
+        if @graph_list_pane == self.viewport.active_pane
+          @node_list_pane.subject.title = "Nodes of #{resource}"
+          @node_list_pane.clear
+          @node_list_pane.subject.contents = self.ship.fetch_node_list resource: resource
+        end
 
         node_index = @node_list_pane.subject.at index: @node_list_pane.index
         @node_view_pane.subject.title = "Node #{self.short_index node_index}"
         @node_view_pane.clear
-        @node_view_pane.subject.contents = @graph_list_pane.subject.node_view(resource: resource, index: node_index)
+        @node_view_pane.subject.contents = self.ship.fetch_node(resource: resource, index: node_index)
 
         self.viewport.activate pane: @node_list_pane
       when 'g'

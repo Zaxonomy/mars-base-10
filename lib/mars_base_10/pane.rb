@@ -100,7 +100,7 @@ module MarsBase10
       when ('0'..'9')
         self.set_row(key.to_i)
       else
-        self.subject.controller.send key: key
+        self.viewport.controller.send key: key
       end
     end
 

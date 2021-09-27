@@ -3,11 +3,9 @@
 module MarsBase10
   class Subject
     attr_accessor :first_row, :scroll_limit, :title
-    attr_reader   :controller
 
-    def initialize(title: 'Untitled', contents:, controller:)
+    def initialize(title: 'Untitled', contents:)
       @contents   = contents
-      @controller = controller
       @first_row  = 0
       @title      = title
     end
@@ -43,21 +41,6 @@ module MarsBase10
 
     def scroll_up
       self.first_row = [self.first_row - 1, 0].max
-    end
-  end
-
-  class ShipSubject < MarsBase10::Subject
-    def initialize(ship:, controller:)
-      super(title: "Graphs", contents: ship.graph_names, controller: controller)
-      @ship = ship
-    end
-
-    def node_list(resource:)
-      @ship.graph(resource: resource).newest_nodes(count: 20).map {|node| node.index}
-    end
-
-    def node_view(resource:, index:)
-      @ship.graph(resource: resource).node(index: index).to_h.values
     end
   end
 end

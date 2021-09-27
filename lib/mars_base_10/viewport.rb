@@ -5,6 +5,7 @@ require_relative 'pane'
 
 module MarsBase10
   class Viewport
+    attr_accessor :controller
     attr_reader   :panes, :win
 
     CURSOR_INVISIBLE = 0
@@ -15,8 +16,11 @@ module MarsBase10
       Curses.curs_set(CURSOR_INVISIBLE)
       Curses.noecho   # Do not echo characters typed by the user.
       Curses.start_color if Curses.has_colors?
-      @panes = []
+
       @active_pane = nil
+      @controller = nil
+
+      @panes = []
 
       # this is the whole visible drawing surface.
       # we don't ever draw on this, but we need it for reference.
