@@ -55,5 +55,9 @@ module MarsBase10
     def node_list(resource:)
       @ship.graph(resource: resource).newest_nodes(count: 20).map {|node| node.index}
     end
+
+    def node_view(resource:, index:)
+      @ship.graph(resource: resource).node(index: index).to_h.values
+    end
   end
 end

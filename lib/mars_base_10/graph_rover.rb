@@ -34,6 +34,12 @@ module MarsBase10
         @node_list_pane.subject.title = "Nodes of #{resource}"
         @node_list_pane.clear
         @node_list_pane.subject.contents = @graph_list_pane.subject.node_list resource: resource
+
+        node_index = @node_list_pane.subject.at index: @node_list_pane.index
+        @node_view_pane.subject.title = "Node #{self.short_index node_index}"
+        @node_view_pane.clear
+        @node_view_pane.subject.contents = @graph_list_pane.subject.node_view(resource: resource, index: node_index)
+
         self.viewport.activate pane: @node_list_pane
       when 'g'
         self.viewport.activate pane: @graph_list_pane
@@ -46,6 +52,13 @@ module MarsBase10
 
     def stop
       self.viewport.close
+    end
+
+    private
+
+    def short_index(index)
+      tokens = index.split('.')
+      "#{tokens[0]}..#{tokens[tokens.size - 2]}.#{tokens[tokens.size - 1]}"
     end
   end
 end
