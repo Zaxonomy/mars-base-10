@@ -4,15 +4,15 @@ require 'curses'
 module MarsBase10
   class Pane
     attr_accessor :draw_row, :draw_col, :index
-    attr_reader   :edge_col, :subject, :top_row, :viewport
+    attr_reader   :left_edge_col, :subject, :top_row, :viewport
 
     def initialize(at_row:, at_col:, viewport:)
-      @top_row  = at_row
-      @edge_col = at_col
-      @index    = 0
-      @subject  = nil
-      @win      = nil
-      @viewport = viewport
+      @top_row       = at_row
+      @left_edge_col = at_col
+      @index         = 0
+      @subject       = nil
+      @win           = nil
+      @viewport      = viewport
     end
 
     def clear
@@ -32,7 +32,7 @@ module MarsBase10
       (0..(self.max_contents_rows - 1)).each do |item|
         self.window.setpos(self.draw_row, self.draw_col)
         # The string here is the gutter followed by the window contents. improving the gutter is tbd.
-        self.window.attron(Curses::A_REVERSE) if (self == self.viewport.active_pane && item == self.index)
+        self.window.attron(Curses::A_REVERSE) if (self.active? && item == self.index)
         self.window.addstr("#{"%2d" % item}  #{self.subject.at index: item}")
         self.window.attroff(Curses::A_REVERSE) # if item == self.index
         self.window.clrtoeol
@@ -64,6 +64,13 @@ module MarsBase10
       4
     end
 
+    def active?
+      self == self.viewport.active_pane
+    end
+
+    #
+    # This is the _relative_ last column, e.g. the width of the pane in columns.
+    #
     def last_col
       self.gutter_width + self.subject.cols + self.right_pad
     end
@@ -133,7 +140,7 @@ module MarsBase10
 
     def window
       return @win if @win
-      @win = Curses::Window.new(self.last_row, self.last_col, self.top_row, self.edge_col)
+      @win = Curses::Window.new(self.last_row, self.last_col, self.top_row, self.left_edge_col)
     end
   end
 
@@ -158,11 +165,11 @@ module MarsBase10
 
   class VariableRightPane < Pane
     def last_col
-      self.viewport.max_cols - self.edge_col
+      self.viewport.max_cols - self.left_edge_col
     end
 
     def last_row
-      self.viewport.max_rows
+      self.viewport.max_rows - self.top_row
     end
 
     def max_contents_rows
