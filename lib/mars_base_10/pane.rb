@@ -4,15 +4,17 @@ require 'curses'
 module MarsBase10
   class Pane
     attr_accessor :draw_row, :draw_col, :index
-    attr_reader   :left_edge_col, :subject, :top_row, :viewport
+    attr_reader   :height_pct, :left_edge_col, :subject, :top_row, :viewport, :width_pct
 
-    def initialize(at_row:, at_col:, viewport:)
+    def initialize(viewport:, at_row:, at_col:, height_pct:, width_pct:)
       @top_row       = at_row
       @left_edge_col = at_col
+      @height_pct    = height_pct
       @index         = 0
       @subject       = nil
       @win           = nil
       @viewport      = viewport
+      @width_pct     = width_pct
     end
 
     def clear
@@ -32,7 +34,7 @@ module MarsBase10
       (0..(self.max_contents_rows - 1)).each do |item|
         self.window.setpos(self.draw_row, self.draw_col)
         # The string here is the gutter followed by the window contents. improving the gutter is tbd.
-        self.window.attron(Curses::A_REVERSE) if (self.active? && item == self.index)
+        self.window.attron(Curses::A_REVERSE) if item == self.index
         self.window.addstr("#{"%2d" % item}  #{self.subject.at index: item}")
         self.window.attroff(Curses::A_REVERSE) # if item == self.index
         self.window.clrtoeol
@@ -72,15 +74,19 @@ module MarsBase10
     # This is the _relative_ last column, e.g. the width of the pane in columns.
     #
     def last_col
-      self.gutter_width + self.subject.cols + self.right_pad
+      [(self.viewport.max_cols * self.width_pct).round, self.min_column_width].max
     end
 
     def last_row
-      2 + self.max_contents_rows
+      [(self.viewport.max_rows * self.height_pct).round, self.max_contents_rows].max
     end
 
     def max_contents_rows
-      [10, self.subject.rows].min
+      self.subject.rows
+    end
+
+    def min_column_width
+      self.gutter_width + self.subject.cols + self.right_pad
     end
 
     def prepare_for_writing_contents
@@ -145,8 +151,8 @@ module MarsBase10
   end
 
   class VariableLeftPane < Pane
-    def initialize(at_row:, right_edge:, viewport:)
-      super(at_row: at_row, at_col: 0, viewport: viewport)
+    def initialize(viewport:, at_row:, right_edge:, height_pct:, width_pct:)
+      super(at_row: at_row, at_col: 0, viewport: viewport, height_pct: height_pct, width_pct: width_pct)
       @last_col = right_edge
     end
 
@@ -168,12 +174,12 @@ module MarsBase10
       self.viewport.max_cols - self.left_edge_col
     end
 
-    def last_row
-      self.viewport.max_rows - self.top_row
-    end
+    # def last_row
+    #   self.viewport.max_rows - self.top_row
+    # end
 
-    def max_contents_rows
-      [(self.last_row - 2), self.subject.rows].min
-    end
+    # def max_contents_rows
+    #   [(self.last_row - 2), self.subject.rows].min
+    # end
   end
 end

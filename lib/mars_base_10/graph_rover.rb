@@ -13,13 +13,13 @@ module MarsBase10
       @viewport.controller = self
 
       @panes = []
-      @graph_list_pane = @viewport.add_pane
+      @graph_list_pane = @viewport.add_pane width_pct: 0.3
       @graph_list_pane.viewing subject: @ship.graph_names
 
-      @node_list_pane = @viewport.add_right_pane(at_col: @graph_list_pane.last_col)
+      @node_list_pane = @viewport.add_right_pane(at_col: @graph_list_pane.last_col, height_pct: 0.5)
       @node_list_pane.viewing subject: @ship.node_list
 
-      @node_view_pane = @viewport.add_left_pane(at_row: @graph_list_pane.last_row, right_edge: @graph_list_pane.last_col)
+      @node_view_pane = @viewport.add_right_pane(at_row: @node_list_pane.last_row, at_col: @graph_list_pane.last_col, height_pct: 0.5)
       @node_view_pane.viewing subject: @ship.node
     end
 

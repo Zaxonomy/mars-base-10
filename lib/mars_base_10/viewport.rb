@@ -41,33 +41,43 @@ module MarsBase10
     #
     # Adds a new drawable area (Pane) to the viewport.
     # By default it is anchored to the top left. (min_row, min_col)
+    #  and full screen. (height and width 100%)
     #
-    def add_pane(at_row: self.min_row, at_col: self.min_col)
-      p = MarsBase10::Pane.new at_row:     at_row,
+    def add_pane(at_row: self.min_row, at_col: self.min_col, height_pct: 1, width_pct: 1)
+      p = MarsBase10::Pane.new viewport:   self,
+                               at_row:     at_row,
                                at_col:     at_col,
-                               viewport:   self
+                               height_pct: height_pct,
+                               width_pct:  width_pct
       @panes << p
       @active_pane = p
     end
 
     def add_left_pane(at_row: self.min_row, right_edge: self.min_col)
-      p = VariableLeftPane.new at_row:     at_row,
+      p = VariableLeftPane.new viewport:   self,
+                               at_row:     at_row,
                                right_edge: right_edge,
-                               viewport:   self
+                               height_pct: 1,
+                               width_pct:  0.5
       @panes << p
       p
     end
 
     #
-    # Adds a new variable drawable area (VariablePane) to the viewport.
+    # Adds a new variable width drawable area (VariablePane) to the
+    #   right-hand side of the viewport.
     #
     # The caller must specify the upper left corner (at_row, at_col) but
-    #   after that it will expand to the width and height of the viewport.
+    #   after that it will automatically adjust its width based upon how
+    #   many columns the left pane(s) use.
     #
-    def add_right_pane(at_row: self.min_row, at_col: self.min_col)
-      p = VariableRightPane.new at_row:     at_row,
+    def add_right_pane(at_row: self.min_row, at_col: self.min_col, height_pct: 1)
+      p = VariableRightPane.new viewport:   self,
+                                at_row:     at_row,
                                 at_col:     at_col,
-                                viewport:   self
+                                height_pct: height_pct,
+                                width_pct:  0.5
+
       @panes << p
       p
     end
