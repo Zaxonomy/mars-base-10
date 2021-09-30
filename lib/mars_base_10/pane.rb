@@ -6,7 +6,7 @@ module MarsBase10
     attr_accessor :draw_row, :draw_col, :index
     attr_reader   :height_pct, :left_edge_col, :subject, :top_row, :viewport, :width_pct
 
-    def initialize(viewport:, at_row:, at_col:, height_pct:, width_pct: 1)
+    def initialize(viewport:, at_row:, at_col:, height_pct: 1, width_pct: 1)
       @top_row       = at_row
       @left_edge_col = at_col
       @height_pct    = height_pct
@@ -173,9 +173,13 @@ module MarsBase10
     end
   end
 
-  class VariableRightPane < Pane
+  class VariableWidthPane < Pane
     def last_col
       self.viewport.max_cols - self.left_edge_col
+    end
+
+    def last_row
+      self.viewport.max_rows - self.top_row
     end
   end
 end

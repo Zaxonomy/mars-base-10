@@ -73,11 +73,10 @@ module MarsBase10
     #   after that it will automatically adjust its width based upon how
     #   many columns the left pane(s) use.
     #
-    def add_right_pane(at_row: self.min_row, at_col: self.min_col, height_pct: 1)
-      p = VariableRightPane.new viewport:   self,
+    def add_variable_pane(at_row: self.min_row, at_col: self.min_col)
+      p = VariableWidthPane.new viewport:   self,
                                 at_row:     at_row,
-                                at_col:     at_col,
-                                height_pct: height_pct
+                                at_col:     at_col
 
       @panes << p
       p

@@ -13,15 +13,22 @@ module MarsBase10
       @viewport.controller = self
 
       @panes = []
+
+      # The graph list is a fixed width, variable height (full screen) pane on the left.
       @graph_list_pane = @viewport.add_pane width_pct: 0.3
       @graph_list_pane.viewing subject: @ship.graph_names
 
-      @node_list_pane = @viewport.add_right_pane(at_col: @graph_list_pane.last_col, height_pct: 0.5)
+      # The node list is a variable width, fixed height pane in the upper right.
+      @node_list_pane = @viewport.add_pane at_col: @graph_list_pane.last_col,
+                                           height_pct: 0.5
       @node_list_pane.viewing subject: @ship.node_list
 
-      @node_view_pane = @viewport.add_right_pane(at_row: @node_list_pane.last_row, at_col: @graph_list_pane.last_col, height_pct: 0.5)
+      # The single node viewer is a variable width, variable height pane in the lower right.
+      @node_view_pane = @viewport.add_variable_pane at_row: @node_list_pane.last_row,
+                                                    at_col: @graph_list_pane.last_col
       @node_view_pane.viewing subject: @ship.node
 
+      self.viewport.activate pane: @graph_list_pane
       self.resync
     end
 
@@ -71,6 +78,7 @@ module MarsBase10
     end
 
     def short_index(index)
+      return "" if index.nil?
       tokens = index.split('.')
       "#{tokens[0]}..#{tokens[tokens.size - 2]}.#{tokens[tokens.size - 1]}"
     end
