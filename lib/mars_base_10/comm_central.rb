@@ -12,7 +12,6 @@ module MarsBase10
       @viewport = Viewport.new
       @rover    = GraphRover.new ship_connection: Urbit.connect(config_file: config_filename),
                                  viewport:        @viewport
-      # @rover.display_on viewport: @viewport
     end
 
     def activate

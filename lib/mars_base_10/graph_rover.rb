@@ -21,26 +21,17 @@ module MarsBase10
 
       @node_view_pane = @viewport.add_right_pane(at_row: @node_list_pane.last_row, at_col: @graph_list_pane.last_col, height_pct: 0.5)
       @node_view_pane.viewing subject: @ship.node
+
+      self.resync
     end
 
     #
     # Called by a pane in this controller for bubbling a key press up
     #
     def send(key:)
+      self.resync
       case key
       when 'i'    # Inspect
-        resource = @graph_list_pane.subject.at index: @graph_list_pane.index
-        if @graph_list_pane == self.viewport.active_pane
-          @node_list_pane.subject.title = "Nodes of #{resource}"
-          @node_list_pane.clear
-          @node_list_pane.subject.contents = self.ship.fetch_node_list resource: resource
-        end
-
-        node_index = @node_list_pane.subject.at index: @node_list_pane.index
-        @node_view_pane.subject.title = "Node #{self.short_index node_index}"
-        @node_view_pane.clear
-        @node_view_pane.subject.contents = self.ship.fetch_node(resource: resource, index: node_index)
-
         self.viewport.activate pane: @node_list_pane
       when 'g'
         self.viewport.activate pane: @graph_list_pane
@@ -56,6 +47,28 @@ module MarsBase10
     end
 
     private
+
+    def resync
+      resource = self.resync_node_list
+      self.resync_node_view(resource)
+    end
+
+    def resync_node_list
+      resource = @graph_list_pane.subject.at index: @graph_list_pane.index
+      if @graph_list_pane == self.viewport.active_pane
+        @node_list_pane.subject.title = "Nodes of #{resource}"
+        @node_list_pane.clear
+        @node_list_pane.subject.contents = self.ship.fetch_node_list resource: resource
+      end
+      resource
+    end
+
+    def resync_node_view(resource)
+      node_index = @node_list_pane.subject.at index: @node_list_pane.index
+      @node_view_pane.subject.title = "Node #{self.short_index node_index}"
+      @node_view_pane.clear
+      @node_view_pane.subject.contents = self.ship.fetch_node(resource: resource, index: node_index)
+    end
 
     def short_index(index)
       tokens = index.split('.')

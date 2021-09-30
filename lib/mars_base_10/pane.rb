@@ -6,7 +6,7 @@ module MarsBase10
     attr_accessor :draw_row, :draw_col, :index
     attr_reader   :height_pct, :left_edge_col, :subject, :top_row, :viewport, :width_pct
 
-    def initialize(viewport:, at_row:, at_col:, height_pct:, width_pct:)
+    def initialize(viewport:, at_row:, at_col:, height_pct:, width_pct: 1)
       @top_row       = at_row
       @left_edge_col = at_col
       @height_pct    = height_pct
@@ -19,13 +19,12 @@ module MarsBase10
 
     def clear
       self.prepare_for_writing_contents
-      (0..(self.max_contents_rows - 1)).each do |item|
+      (0..(self.last_row - 1)).each do |item|
         self.window.setpos(self.draw_row, self.draw_col)
         self.window.addstr("")
         self.window.clrtoeol
         self.draw_row += 1
       end
-      self.draw_border
     end
 
     def draw
@@ -45,8 +44,10 @@ module MarsBase10
     end
 
     def draw_border
+      self.window.attron(Curses.color_pair(1) | Curses::A_BOLD) if self.active?
       self.window.box
       self.draw_title
+      self.window.attroff(Curses.color_pair(1) | Curses::A_BOLD) if self.active?
     end
 
     def draw_title
@@ -74,11 +75,11 @@ module MarsBase10
     # This is the _relative_ last column, e.g. the width of the pane in columns.
     #
     def last_col
-      [(self.viewport.max_cols * self.width_pct).round, self.min_column_width].max
+      [(self.viewport.max_cols * self.width_pct).floor, self.min_column_width].max
     end
 
     def last_row
-      [(self.viewport.max_rows * self.height_pct).round, self.max_contents_rows].max
+      [(self.viewport.max_rows * self.height_pct).floor, self.max_contents_rows].max
     end
 
     def max_contents_rows
@@ -112,9 +113,10 @@ module MarsBase10
         exit 0
       when ('0'..'9')
         self.set_row(key.to_i)
-      else
-        self.viewport.controller.send key: key
       end
+
+      # Always send the key to the controller for additional processing...
+      self.viewport.controller.send key: key
     end
 
     def right_pad
@@ -125,14 +127,14 @@ module MarsBase10
     # this is a no-op if the index is out of range
     #
     def set_row(i)
-      self.subject.scroll_limit = self.max_contents_rows
+      self.subject.scroll_limit = self.last_row - 1
 
       if (i < 0)
        self.subject.scroll_up
        i = 0
       end
 
-      if (i >= self.max_contents_rows)
+      if (i >= self.last_row - 1)
         self.subject.scroll_down
         i -= 1
       end
@@ -147,6 +149,8 @@ module MarsBase10
     def window
       return @win if @win
       @win = Curses::Window.new(self.last_row, self.last_col, self.top_row, self.left_edge_col)
+      # @win.bkgd(Curses::COLOR_WHITE)
+      @win
     end
   end
 
@@ -173,13 +177,5 @@ module MarsBase10
     def last_col
       self.viewport.max_cols - self.left_edge_col
     end
-
-    # def last_row
-    #   self.viewport.max_rows - self.top_row
-    # end
-
-    # def max_contents_rows
-    #   [(self.last_row - 2), self.subject.rows].min
-    # end
   end
 end

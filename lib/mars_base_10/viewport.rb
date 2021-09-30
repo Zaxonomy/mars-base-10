@@ -15,7 +15,9 @@ module MarsBase10
       Curses.init_screen
       Curses.curs_set(CURSOR_INVISIBLE)
       Curses.noecho   # Do not echo characters typed by the user.
+
       Curses.start_color if Curses.has_colors?
+      Curses.init_pair(1, Curses::COLOR_RED, Curses::COLOR_BLACK)
 
       @active_pane = nil
       @controller = nil
@@ -75,8 +77,7 @@ module MarsBase10
       p = VariableRightPane.new viewport:   self,
                                 at_row:     at_row,
                                 at_col:     at_col,
-                                height_pct: height_pct,
-                                width_pct:  0.5
+                                height_pct: height_pct
 
       @panes << p
       p
