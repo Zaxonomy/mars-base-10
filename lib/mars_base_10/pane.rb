@@ -27,6 +27,10 @@ module MarsBase10
       end
     end
 
+    def current_subject
+      self.subject.at index: self.index
+    end
+
     def draw
       self.prepare_for_writing_contents
 
@@ -127,16 +131,20 @@ module MarsBase10
     # this is a no-op if the index is out of range
     #
     def set_row(i)
-      self.subject.scroll_limit = self.last_row - 1
+      self.subject.scroll_limit = self.last_row - 2
 
       if (i < 0)
        self.subject.scroll_up
        i = 0
       end
 
-      if (i >= self.last_row - 1)
+      if (i >= self.subject.scroll_limit)
         self.subject.scroll_down
         i -= 1
+      end
+
+       if (i > self.max_contents_rows)
+         i -= 1
       end
 
       self.index = i # if (i <= self.max_contents_rows) && (i >= 0)
@@ -149,29 +157,27 @@ module MarsBase10
     def window
       return @win if @win
       @win = Curses::Window.new(self.last_row, self.last_col, self.top_row, self.left_edge_col)
-      # @win.bkgd(Curses::COLOR_WHITE)
-      @win
     end
   end
 
-  class VariableLeftPane < Pane
-    def initialize(viewport:, at_row:, right_edge:, height_pct:, width_pct:)
-      super(at_row: at_row, at_col: 0, viewport: viewport, height_pct: height_pct, width_pct: width_pct)
-      @last_col = right_edge
-    end
+  # class VariableLeftPane < Pane
+  #   def initialize(viewport:, at_row:, right_edge:, height_pct:, width_pct:)
+  #     super(at_row: at_row, at_col: 0, viewport: viewport, height_pct: height_pct, width_pct: width_pct)
+  #     @last_col = right_edge
+  #   end
 
-    def last_col
-      @last_col
-    end
+  #   def last_col
+  #     @last_col
+  #   end
 
-    def last_row
-      self.viewport.max_rows - self.top_row
-    end
+  #   def last_row
+  #     self.viewport.max_rows - self.top_row
+  #   end
 
-    def max_contents_rows
-      [(self.last_row - 2), self.subject.rows].min
-    end
-  end
+  #   def max_contents_rows
+  #     [(self.last_row - 2), self.subject.rows].min
+  #   end
+  # end
 
   class VariableWidthPane < Pane
     def last_col

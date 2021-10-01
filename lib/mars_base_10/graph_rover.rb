@@ -36,13 +36,13 @@ module MarsBase10
     # Called by a pane in this controller for bubbling a key press up
     #
     def send(key:)
-      self.resync
       case key
       when 'i'    # Inspect
         self.viewport.activate pane: @node_list_pane
       when 'g'
         self.viewport.activate pane: @graph_list_pane
       end
+      self.resync
     end
 
     def start
@@ -56,22 +56,22 @@ module MarsBase10
     private
 
     def resync
-      resource = self.resync_node_list
-      self.resync_node_view(resource)
+      self.resync_node_view(self.resync_node_list)
     end
 
     def resync_node_list
-      resource = @graph_list_pane.subject.at index: @graph_list_pane.index
+      resource = @graph_list_pane.current_subject
       if @graph_list_pane == self.viewport.active_pane
         @node_list_pane.subject.title = "Nodes of #{resource}"
         @node_list_pane.clear
+        @node_list_pane.subject.first_row = 0
         @node_list_pane.subject.contents = self.ship.fetch_node_list resource: resource
       end
       resource
     end
 
     def resync_node_view(resource)
-      node_index = @node_list_pane.subject.at index: @node_list_pane.index
+      node_index = @node_list_pane.current_subject
       @node_view_pane.subject.title = "Node #{self.short_index node_index}"
       @node_view_pane.clear
       @node_view_pane.subject.contents = self.ship.fetch_node(resource: resource, index: node_index)
