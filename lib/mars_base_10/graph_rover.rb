@@ -19,12 +19,12 @@ module MarsBase10
       @graph_list_pane.viewing subject: @ship.graph_names
 
       # The node list is a variable width, fixed height pane in the upper right.
-      @node_list_pane = @viewport.add_pane at_col: @graph_list_pane.last_col,
-                                           height_pct: 0.5
+      @node_list_pane = @viewport.add_variable_width_pane at_col: @graph_list_pane.last_col,
+                                                          height_pct: 0.5
       @node_list_pane.viewing subject: @ship.node_list
 
       # The single node viewer is a variable width, variable height pane in the lower right.
-      @node_view_pane = @viewport.add_variable_pane at_row: @node_list_pane.last_row,
+      @node_view_pane = @viewport.add_variable_both_pane at_row: @node_list_pane.last_row,
                                                     at_col: @graph_list_pane.last_col
       @node_view_pane.viewing subject: @ship.node
 

@@ -131,7 +131,7 @@ module MarsBase10
     # this is a no-op if the index is out of range
     #
     def set_row(i)
-      self.subject.scroll_limit = self.last_row - 2
+      self.subject.scroll_limit = [self.last_row - 1, self.max_contents_rows].min
 
       if (i < 0)
        self.subject.scroll_up
@@ -179,13 +179,19 @@ module MarsBase10
   #   end
   # end
 
-  class VariableWidthPane < Pane
+  class VariableBothPane < Pane
     def last_col
       self.viewport.max_cols - self.left_edge_col
     end
 
     def last_row
       self.viewport.max_rows - self.top_row
+    end
+  end
+
+  class VariableWidthPane < Pane
+    def last_col
+      self.viewport.max_cols - self.left_edge_col
     end
   end
 end

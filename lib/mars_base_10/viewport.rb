@@ -55,29 +55,27 @@ module MarsBase10
       @active_pane = p
     end
 
-    def add_left_pane(at_row: self.min_row, right_edge: self.min_col)
-      p = VariableLeftPane.new viewport:   self,
-                               at_row:     at_row,
-                               right_edge: right_edge,
-                               height_pct: 1,
-                               width_pct:  0.5
+    def add_variable_width_pane(at_row: self.min_row, at_col: self.min_col, height_pct:)
+      p = VariableWidthPane.new viewport: self,
+                                  at_row: at_row,
+                                  at_col: at_col,
+                              height_pct: height_pct
       @panes << p
       p
     end
 
     #
-    # Adds a new variable width drawable area (VariablePane) to the
+    # Adds a new variable width drawable area (VariableBothPane) to the
     #   right-hand side of the viewport.
     #
     # The caller must specify the upper left corner (at_row, at_col) but
     #   after that it will automatically adjust its width based upon how
     #   many columns the left pane(s) use.
     #
-    def add_variable_pane(at_row: self.min_row, at_col: self.min_col)
-      p = VariableWidthPane.new viewport:   self,
-                                at_row:     at_row,
-                                at_col:     at_col
-
+    def add_variable_both_pane(at_row: self.min_row, at_col: self.min_col)
+      p = VariableBothPane.new viewport: self,
+                                 at_row: at_row,
+                                 at_col: at_col
       @panes << p
       p
     end
