@@ -3,7 +3,7 @@ require 'curses'
 
 module MarsBase10
   class Pane
-    attr_accessor :draw_row, :draw_col, :index
+    attr_accessor :draw_row, :draw_col, :index, :latch
     attr_reader   :height_pct, :left_edge_col, :subject, :top_row, :viewport, :width_pct
 
     def initialize(viewport:, at_row:, at_col:, height_pct: 1, width_pct: 1)
@@ -11,10 +11,15 @@ module MarsBase10
       @left_edge_col = at_col
       @height_pct    = height_pct
       @index         = 0
+      @latch         = -1
       @subject       = nil
       @win           = nil
       @viewport      = viewport
       @width_pct     = width_pct
+    end
+
+    def active?
+      self == self.viewport.active_pane
     end
 
     def clear
@@ -38,7 +43,7 @@ module MarsBase10
         self.window.setpos(self.draw_row, self.draw_col)
         # The string here is the gutter followed by the window contents. improving the gutter is tbd.
         self.window.attron(Curses::A_REVERSE) if item == self.index
-        self.window.addstr("#{"%2d" % item}  #{self.subject.at index: item}")
+        self.window.addstr("#{"%02d" % item}  #{self.subject.at index: item}")
         self.window.attroff(Curses::A_REVERSE) # if item == self.index
         self.window.clrtoeol
         self.draw_row += 1
@@ -71,10 +76,6 @@ module MarsBase10
       4
     end
 
-    def active?
-      self == self.viewport.active_pane
-    end
-
     #
     # This is the _relative_ last column, e.g. the width of the pane in columns.
     #
@@ -84,6 +85,13 @@ module MarsBase10
 
     def last_row
       (self.viewport.max_rows * self.height_pct).floor
+    end
+
+    #
+    # The pane is latched if it has consumed 1 key 0-9 and is awaiting the next key.
+    #
+    def latched?
+      self.latch != -1
     end
 
     def max_contents_rows
@@ -116,7 +124,12 @@ module MarsBase10
       when 'q'
         exit 0
       when ('0'..'9')
-        self.set_row(key.to_i)
+        if self.latched?
+          self.set_row((self.latch * 10) + key.to_i)
+          self.latch = -1
+        else
+          self.latch = key.to_i
+        end
       end
 
       # Always send the key to the controller for additional processing...
