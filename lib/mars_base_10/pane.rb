@@ -83,7 +83,7 @@ module MarsBase10
     end
 
     def last_row
-      [(self.viewport.max_rows * self.height_pct).floor, self.max_contents_rows].max
+      (self.viewport.max_rows * self.height_pct).floor
     end
 
     def max_contents_rows
@@ -138,13 +138,14 @@ module MarsBase10
        i = 0
       end
 
-      if (i >= self.subject.scroll_limit)
-        self.subject.scroll_down
-        i -= 1
+      # If we've reached the end of the content, it's a no-op.
+       if (i >= self.max_contents_rows)
+         i -= 1
       end
 
-       if (i > self.max_contents_rows)
-         i -= 1
+      if (i >= self.last_row - 2)
+        self.subject.scroll_down
+        i -= 1
       end
 
       self.index = i # if (i <= self.max_contents_rows) && (i >= 0)
@@ -159,25 +160,6 @@ module MarsBase10
       @win = Curses::Window.new(self.last_row, self.last_col, self.top_row, self.left_edge_col)
     end
   end
-
-  # class VariableLeftPane < Pane
-  #   def initialize(viewport:, at_row:, right_edge:, height_pct:, width_pct:)
-  #     super(at_row: at_row, at_col: 0, viewport: viewport, height_pct: height_pct, width_pct: width_pct)
-  #     @last_col = right_edge
-  #   end
-
-  #   def last_col
-  #     @last_col
-  #   end
-
-  #   def last_row
-  #     self.viewport.max_rows - self.top_row
-  #   end
-
-  #   def max_contents_rows
-  #     [(self.last_row - 2), self.subject.rows].min
-  #   end
-  # end
 
   class VariableBothPane < Pane
     def last_col
