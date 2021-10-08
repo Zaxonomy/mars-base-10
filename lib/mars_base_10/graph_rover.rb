@@ -41,6 +41,7 @@ module MarsBase10
         begin
           resource = @graph_list_pane.current_subject
           node_index = @node_list_pane.current_subject
+          @node_list_pane.clear
           @node_list_pane.subject.contents = self.ship.fetch_node_children resource: resource, index: node_index
         end
       when 'i'    # (I)nspect
