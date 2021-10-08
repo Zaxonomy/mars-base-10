@@ -25,7 +25,7 @@ module MarsBase10
 
       # The single node viewer is a variable width, variable height pane in the lower right.
       @node_view_pane = @viewport.add_variable_both_pane at_row: @node_list_pane.last_row,
-                                                    at_col: @graph_list_pane.last_col
+                                                         at_col: @graph_list_pane.last_col
       @node_view_pane.viewing subject: @ship.node
 
       self.viewport.activate pane: @graph_list_pane
@@ -37,9 +37,18 @@ module MarsBase10
     #
     def send(key:)
       case key
-      when 'i'    # Inspect
-        self.viewport.activate pane: @node_list_pane
-      when 'g'
+      when 'd'    # (D)ive
+        begin
+          resource = @graph_list_pane.current_subject
+          node_index = @node_list_pane.current_subject
+          @node_list_pane.subject.contents = self.ship.fetch_node_children resource: resource, index: node_index
+        end
+      when 'i'    # (I)nspect
+        begin
+          # @graph_list_pane.subject.contents = [@graph_list_pane.subject.at(index: @graph_list_pane.index)]
+          self.viewport.activate pane: @node_list_pane
+        end
+      when 'g'    # (G)raph View
         self.viewport.activate pane: @graph_list_pane
       end
       self.resync
@@ -74,7 +83,7 @@ module MarsBase10
       node_index = @node_list_pane.current_subject
       @node_view_pane.subject.title = "Node #{self.short_index node_index}"
       @node_view_pane.clear
-      @node_view_pane.subject.contents = self.ship.fetch_node(resource: resource, index: node_index)
+      @node_view_pane.subject.contents = self.ship.fetch_node_contents(resource: resource, index: node_index)
     end
 
     def short_index(index)

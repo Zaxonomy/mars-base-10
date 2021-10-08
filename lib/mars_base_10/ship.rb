@@ -20,12 +20,21 @@ module MarsBase10
       Subject.new title: 'Node List', contents: []
     end
 
-    def fetch_node_list(resource:)
-      @ship.graph(resource: resource).newest_nodes(count: 20).map {|node| node.index}.sort
+    def fetch_node(resource:, index:)
+      @ship.graph(resource: resource).node(index: index)
     end
 
-    def fetch_node(resource:, index:)
-      @ship.graph(resource: resource).node(index: index).to_h.values
+    def fetch_node_children(resource:, index:)
+      self.fetch_node(resource: resource, index: index).children.map {|node| node.index}.sort
+    end
+
+    def fetch_node_contents(resource:, index:)
+      return [] unless (n = self.fetch_node(resource: resource, index: index))
+      n.to_pretty_array
+    end
+
+    def fetch_node_list(resource:)
+      @ship.graph(resource: resource).newest_nodes(count: 20).map {|node| node.index}.sort
     end
   end
 end
