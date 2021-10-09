@@ -41,11 +41,13 @@ module MarsBase10
       case key
       when 'd'    # (D)ive
         begin
-          resource = @graph_list_pane.current_subject
-          node_index = @node_list_pane.current_subject
-          @stack.push [resource, node_index]
-          @node_list_pane.clear
-          @node_list_pane.subject.contents = self.ship.fetch_node_children resource: resource, index: node_index
+          if @node_view_pane.subject.contents[4].include?('true')
+            resource = @graph_list_pane.current_subject
+            node_index = @node_list_pane.current_subject
+            @stack.push(resource)
+            @node_list_pane.clear
+            @node_list_pane.subject.contents = self.ship.fetch_node_children resource: resource, index: node_index
+          end
         end
       when 'i'    # (I)nspect
         begin
@@ -55,9 +57,10 @@ module MarsBase10
         self.viewport.activate pane: @graph_list_pane
       when 'p'    # (P)op
         begin
-          resource, node_index = @stack.pop
-          @node_list_pane.clear
-          @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: resource)
+          if (resource = @stack.pop)
+            @node_list_pane.clear
+            @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: resource)
+          end
         end
       end
       self.resync
