@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'ship'
+require_relative 'stack'
 require_relative 'subject'
 
 module MarsBase10
@@ -9,6 +10,7 @@ module MarsBase10
 
     def initialize(ship_connection:, viewport:)
       @ship = Ship.new connection: ship_connection
+      @stack = Stack.new
       @viewport = viewport
       @viewport.controller = self
 
@@ -41,16 +43,22 @@ module MarsBase10
         begin
           resource = @graph_list_pane.current_subject
           node_index = @node_list_pane.current_subject
+          @stack.push [resource, node_index]
           @node_list_pane.clear
           @node_list_pane.subject.contents = self.ship.fetch_node_children resource: resource, index: node_index
         end
       when 'i'    # (I)nspect
         begin
-          # @graph_list_pane.subject.contents = [@graph_list_pane.subject.at(index: @graph_list_pane.index)]
           self.viewport.activate pane: @node_list_pane
         end
       when 'g'    # (G)raph View
         self.viewport.activate pane: @graph_list_pane
+      when 'p'    # (P)op
+        begin
+          resource, node_index = @stack.pop
+          @node_list_pane.clear
+          @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: resource)
+        end
       end
       self.resync
     end
