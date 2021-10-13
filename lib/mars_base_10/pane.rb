@@ -3,8 +3,8 @@ require 'curses'
 
 module MarsBase10
   class Pane
-    attr_accessor :draw_row, :draw_col, :index, :latch
-    attr_reader   :height_pct, :left_edge_col, :subject, :top_row, :viewport, :width_pct
+    attr_accessor :draw_row, :draw_col, :index, :latch, :subject
+    attr_reader   :height_pct, :left_edge_col, :top_row, :viewport, :width_pct
 
     def initialize(viewport:, at_row:, at_col:, height_pct: 1, width_pct: 1)
       @top_row       = at_row

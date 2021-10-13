@@ -54,12 +54,15 @@ module MarsBase10
           self.viewport.activate pane: @node_list_pane
         end
       when 'g'    # (G)raph View
-        self.viewport.activate pane: @graph_list_pane
+        unless @graph_list_pane.active?
+          self.viewport.activate pane: @graph_list_pane
+        end
       when 'p'    # (P)op
         begin
           if (resource = @stack.pop)
             @node_list_pane.clear
             @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: resource)
+            @node_list_pane.index = 0
           end
         end
       end
