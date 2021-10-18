@@ -1,0 +1,11 @@
+*.gem
+_config*.yml
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/examples/
+/pkg/
+/spec/reports/
+/tmp/
