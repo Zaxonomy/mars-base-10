@@ -47,6 +47,7 @@ module MarsBase10
             @stack.push(resource)
             @node_list_pane.clear
             @node_list_pane.subject.contents = self.ship.fetch_node_children resource: resource, index: node_index
+            @node_list_pane.index = 0
           end
         end
       when 'i'    # (I)nspect
