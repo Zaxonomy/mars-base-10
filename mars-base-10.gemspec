@@ -13,7 +13,6 @@ Gem::Specification.new do |spec|
   spec.description   = "A keyboard maximalist, curses-based, urbit terminal ui. It uses the (also in development) ruby airlock."
 
   if spec.respond_to?(:metadata=)
-    spec.metadata["allowed_push_host"] = "TODO: Set to 'https://mygemserver.com'"
     spec.metadata["homepage_uri"]      = spec.homepage
     spec.metadata["source_code_uri"]   = "https://github.com/Zaxonomy/mars-base-10"
     spec.metadata["changelog_uri"]     = "https://github.com/Zaxonomy/mars-base-10/CHANGELOG.md"
@@ -24,12 +23,6 @@ Gem::Specification.new do |spec|
   spec.files =  Dir.glob("lib{.rb,/**/*}", File::FNM_DOTMATCH).reject {|f| File.directory?(f) }
   spec.files += %w[mars-base-10.gemspec]    # include the gemspec itself because warbler breaks w/o it
 
-  # Dir.chdir(File.expand_path(__dir__)) do
-  #   `git ls-files -z`.split("\x0").reject do |f|
-  #     (f == __FILE__) || f.match(%r{\A(?:(?:test|spec|features)/|\.(?:git|travis|circleci)|appveyor)})
-  #   end
-  # end
-
   spec.bindir        = "bin"
   spec.executables   = %w[mb10]
   spec.require_paths = ["lib"]
@@ -39,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "sorted_set", "~> 1.0"
   spec.add_dependency "thor",       "~> 1.1"
   spec.add_dependency "tty-font",   "~> 0.5"
-  spec.add_dependency "urbit-api",  "~> 0.2"
+  spec.add_dependency "urbit-api",  "~> 0.2.1"
 
   spec.add_development_dependency "pry",     "~> 0.13"
   spec.add_development_dependency "rspec",   "~> 3.10"
