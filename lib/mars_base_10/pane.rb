@@ -83,6 +83,9 @@ module MarsBase10
       [(self.viewport.max_cols * self.width_pct).floor, self.min_column_width].max
     end
 
+    #
+    # This is the _relative_ last row, e.g. the height of the pane in columns.
+    #
     def last_row
       (self.viewport.max_rows * self.height_pct).floor
     end

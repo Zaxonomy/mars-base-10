@@ -53,6 +53,7 @@ module MarsBase10
       when 'i'    # (I)nspect
         begin
           self.viewport.activate pane: @node_list_pane
+          self.viewport.action_bar.actions = {'g': 'Graph List', 'j': 'Move Down', 'k': 'Move Up'}
         end
       when 'g'    # (G)raph View
         unless @graph_list_pane.active?

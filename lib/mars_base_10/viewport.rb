@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 require 'curses'
 
+require_relative 'action_bar'
 require_relative 'pane'
 
 module MarsBase10
   class Viewport
-    attr_accessor :controller
+    attr_accessor :action_bar, :controller
     attr_reader   :panes, :win
 
     CURSOR_INVISIBLE = 0
@@ -18,10 +19,12 @@ module MarsBase10
 
       Curses.start_color if Curses.has_colors?
       Curses.init_pair(1, Curses::COLOR_RED, Curses::COLOR_BLACK)
+      Curses.init_pair(2, Curses::COLOR_BLACK, Curses::COLOR_WHITE)
 
       @active_pane = nil
       @controller = nil
 
+      @action_bar = ActionBar.new actions: {'i': 'Inspect', 'j': 'Move Down', 'k': 'Move Up'}, viewport: self
       @panes = []
 
       # this is the whole visible drawing surface.
@@ -89,7 +92,7 @@ module MarsBase10
     end
 
     def max_rows
-      self.win.maxy
+      self.win.maxy - 1
     end
 
     def min_col
@@ -106,16 +109,10 @@ module MarsBase10
           pane.draw
           pane.window.refresh
         end
+        self.action_bar.draw
+        self.action_bar.window.refresh
         self.active_pane.process
       end
-    end
-
-    #
-    # Called by a pane in this viewport for bubbling a key press up
-    # to the controller.
-    #
-    def send(key:)
-      self.activate pane: self.panes[1]
     end
   end
 end
