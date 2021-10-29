@@ -30,6 +30,7 @@ module MarsBase10
                                                          at_col: @graph_list_pane.last_col
       @node_view_pane.viewing subject: @ship.node
 
+      self.viewport.action_bar = ActionBar.new actions: {'i': 'Inspect', 'j': 'Move Down', 'k': 'Move Up', 'q': 'Quit'}
       self.viewport.activate pane: @graph_list_pane
       self.resync
     end
@@ -42,6 +43,7 @@ module MarsBase10
       when 'd'    # (D)ive
         begin
           if @node_view_pane.subject.contents[4].include?('true')
+            self.viewport.action_bar.actions = {'d': 'Dive In', 'g': 'Graph List', 'j': 'Move Down', 'k': 'Move Up', 'p': 'Pop Out', 'q': 'Quit'}
             resource = @graph_list_pane.current_subject
             node_index = @node_list_pane.current_subject
             @stack.push(resource)
@@ -53,7 +55,7 @@ module MarsBase10
       when 'i'    # (I)nspect
         begin
           self.viewport.activate pane: @node_list_pane
-          self.viewport.action_bar.actions = {'g': 'Graph List', 'j': 'Move Down', 'k': 'Move Up'}
+          self.viewport.action_bar.actions = {'d': 'Dive In', 'g': 'Graph List', 'j': 'Move Down', 'k': 'Move Up', 'q': 'Quit'}
         end
       when 'g'    # (G)raph View
         unless @graph_list_pane.active?
@@ -65,6 +67,9 @@ module MarsBase10
             @node_list_pane.clear
             @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: resource)
             @node_list_pane.index = 0
+          end
+          if (@stack.length == 0)
+            self.viewport.action_bar.actions = {'d': 'Dive In', 'g': 'Graph List', 'j': 'Move Down', 'k': 'Move Up', 'q': 'Quit'}
           end
         end
       end

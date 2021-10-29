@@ -4,9 +4,9 @@ module MarsBase10
   class ActionBar
     attr_accessor :actions
 
-    def initialize(actions:, viewport:)
+    def initialize(actions:)
       @actions  = actions
-      @viewport = viewport
+      @viewport = nil
       @win      = nil
     end
 
@@ -33,6 +33,10 @@ module MarsBase10
 
       self.window.addstr(" " * (self.width - (self.actions_first_col + self.actions_width)))
       self.window.attroff(Curses.color_pair(2))
+    end
+
+    def display_on(viewport:)
+      @viewport = viewport
     end
 
     def first_col

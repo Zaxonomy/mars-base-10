@@ -6,7 +6,7 @@ require_relative 'pane'
 
 module MarsBase10
   class Viewport
-    attr_accessor :action_bar, :controller
+    attr_accessor :controller
     attr_reader   :panes, :win
 
     CURSOR_INVISIBLE = 0
@@ -19,17 +19,29 @@ module MarsBase10
 
       Curses.start_color if Curses.has_colors?
       Curses.init_pair(1, Curses::COLOR_RED, Curses::COLOR_BLACK)
-      Curses.init_pair(2, Curses::COLOR_BLACK, Curses::COLOR_WHITE)
+      Curses.init_pair(2, Curses::COLOR_BLACK, Curses::COLOR_CYAN)
 
       @active_pane = nil
       @controller = nil
 
-      @action_bar = ActionBar.new actions: {'i': 'Inspect', 'j': 'Move Down', 'k': 'Move Up'}, viewport: self
+      @action_bar = nil
       @panes = []
 
       # this is the whole visible drawing surface.
       # we don't ever draw on this, but we need it for reference.
       @win = Curses::Window.new 0, 0, 0, 0
+    end
+
+    def action_bar
+      return @action_bar unless @action_bar.nil?
+      # Make a default action bar. Only movement for now.
+      self.action_bar = ActionBar.new actions: {'j': 'Move Down', 'k': 'Move Up', 'q': 'Quit'}
+    end
+
+    def action_bar=(an_action_bar)
+      @action_bar = an_action_bar
+      @action_bar.display_on viewport: self
+      @action_bar
     end
 
     def activate(pane:)
