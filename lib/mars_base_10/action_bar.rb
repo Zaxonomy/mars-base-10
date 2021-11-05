@@ -10,12 +10,21 @@ module MarsBase10
       @win      = nil
     end
 
+    def self.Default
+      ActionBar.new actions: {'j': 'Move Down', 'k': 'Move Up', 'q': 'Quit'}
+    end
+
     def actions_first_col
       (self.width - self.actions_width)/2
     end
 
     def actions_width
       self.actions.values.inject(0) {|acc, item| acc += (3 + 2 + item.length + 2)}
+    end
+
+    def add_action(a_hash)
+      self.actions = Hash[@actions.merge!(a_hash).sort]
+      self
     end
 
     def draw
@@ -49,6 +58,11 @@ module MarsBase10
 
     def height
       1
+    end
+
+    def remove_action(key)
+      self.actions.delete_if {|k, v| k == key}
+      self
     end
 
     def width
