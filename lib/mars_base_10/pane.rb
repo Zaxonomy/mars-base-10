@@ -90,6 +90,10 @@ module MarsBase10
       (self.viewport.max_rows * self.height_pct).floor
     end
 
+    def last_visible_row
+      self.last_row - 2
+    end
+
     #
     # The pane is latched if it has consumed 1 key 0-9 and is awaiting the next key.
     #
@@ -147,7 +151,7 @@ module MarsBase10
     # this is a no-op if the index is out of range
     #
     def set_row(i)
-      self.subject.scroll_limit = [self.last_row - 1, self.max_contents_rows].min
+      self.subject.scroll_limit = [self.last_visible_row, self.max_contents_rows].min
 
       if (i < 0)
        self.subject.scroll_up
@@ -159,7 +163,7 @@ module MarsBase10
          i -= 1
       end
 
-      if (i >= self.last_row - 2)
+      if (i >= self.last_visible_row)
         self.subject.scroll_down
         i -= 1
       end
