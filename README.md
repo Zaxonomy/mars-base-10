@@ -7,7 +7,7 @@ This is the urbit console you have been waiting for
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'mars-base-10'
+gem 'mars_base_10'
 ```
 
 And then execute:
@@ -16,7 +16,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install mars-base-10
+    $ gem install mars_base_10
 
 ## Usage
 
