@@ -3,7 +3,7 @@
 require_relative "lib/mars_base_10/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "mars-base-10"
+  spec.name          = "mars_base_10"
   spec.version       = MarsBase10::VERSION
   spec.license       = "MIT"
   spec.authors       = ["Daryl Richter"]
@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.7.0"
 
   spec.files =  Dir.glob("lib{.rb,/**/*}", File::FNM_DOTMATCH).reject {|f| File.directory?(f) }
-  spec.files += %w[mars-base-10.gemspec]    # include the gemspec itself because warbler breaks w/o it
+  spec.files += %w[mars_base_10.gemspec]    # include the gemspec itself because warbler breaks w/o it
 
   spec.bindir        = "bin"
   spec.executables   = %w[mb10]
