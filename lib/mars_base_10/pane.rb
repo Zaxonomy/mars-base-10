@@ -41,10 +41,9 @@ module MarsBase10
 
       (0..(self.max_contents_rows - 1)).each do |item|
         self.window.setpos(self.draw_row, self.draw_col)
-        # The string here is the gutter followed by the window contents. improving the gutter is tbd.
         self.window.attron(Curses::A_REVERSE) if item == self.index
-        self.window.addstr("#{"%02d" % item}  #{self.subject.at index: item}")
-        self.window.attroff(Curses::A_REVERSE) # if item == self.index
+        self.window.addstr(self.subject.line_at index: item)
+        self.window.attroff(Curses::A_REVERSE) if item == self.index
         self.window.clrtoeol
         self.draw_row += 1
       end

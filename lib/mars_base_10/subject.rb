@@ -30,6 +30,15 @@ module MarsBase10
       @contents = a_contents_array
     end
 
+    def index_at(index:)
+      index + self.first_row + 1
+    end
+
+    def line_at(index:)
+      # The string here is the gutter followed by the window contents. improving the gutter is tbd.
+      "#{"%02d" % index}  #{self.at index: index}  #{"%04d" % (self.index_at index: index)}"
+    end
+
     def rows
       return @rows if @rows
       @rows = @contents.size
