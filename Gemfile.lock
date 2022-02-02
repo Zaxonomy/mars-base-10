@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mars-base-10 (0.1.1)
+    mars_base_10 (0.3.0)
       curses (~> 1.4)
       pastel (~> 0.8)
       sorted_set (~> 1.0)
@@ -107,7 +107,7 @@ PLATFORMS
 
 DEPENDENCIES
   gem-release
-  mars-base-10!
+  mars_base_10!
   pry (~> 0.13)
   rake (~> 13.0)
   rspec (~> 3.10)
