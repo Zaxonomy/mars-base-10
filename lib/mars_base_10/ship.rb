@@ -34,7 +34,7 @@ module MarsBase10
     end
 
     def fetch_node_list(resource:)
-      @ship.graph(resource: resource).newest_nodes(count: 20).map {|node| node.index}.sort
+      @ship.graph(resource: resource).newest_nodes(count: 60).map {|node| node.index}.sort
     end
   end
 end
