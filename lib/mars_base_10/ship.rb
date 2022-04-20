@@ -36,5 +36,9 @@ module MarsBase10
     def fetch_node_list(resource:)
       @ship.graph(resource: resource).newest_nodes(count: 60).map {|node| node.index}.sort
     end
+
+    def fetch_older_nodes(resource:, node:)
+      @ship.graph(resource: resource).older_sibling_nodes(node: node, count: 60).map {|node| node.index}.sort
+    end
   end
 end

@@ -153,13 +153,14 @@ module MarsBase10
       self.subject.scroll_limit = [self.last_visible_row, self.max_contents_rows].min
 
       if (i < 0)
-       self.subject.scroll_up
-       i = 0
+        self.viewport.controller.load_history(node_index: self.subject.at(index: 0))
+        self.subject.scroll_up
+        i = 0
       end
 
       # If we've reached the end of the content, it's a no-op.
-       if (i >= self.max_contents_rows)
-         i -= 1
+      if (i >= self.max_contents_rows)
+        i -= 1
       end
 
       if (i >= self.last_visible_row)

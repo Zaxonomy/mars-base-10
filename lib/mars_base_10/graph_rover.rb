@@ -35,6 +35,15 @@ module MarsBase10
       self.resync
     end
 
+    def load_history(node_index:)
+      node = self.ship.fetch_node(resource: self.resource, index: node_index)
+      @node_list_pane.subject.contents = self.ship.fetch_older_nodes(resource: self.resource, node: node) + @node_list_pane.subject.contents
+    end
+
+    def resource
+      @graph_list_pane.current_subject
+    end
+
     #
     # Called by a pane in this controller for bubbling a key press up
     #
@@ -87,25 +96,26 @@ module MarsBase10
     private
 
     def resync
-      self.resync_node_view(self.resync_node_list)
+      self.resync_node_list
+      self.resync_node_view
     end
 
     def resync_node_list
-      resource = @graph_list_pane.current_subject
       if @graph_list_pane == self.viewport.active_pane
-        @node_list_pane.subject.title = "Nodes of #{resource}"
+        @node_list_pane.subject.title = "Nodes of #{self.resource}"
         @node_list_pane.clear
         @node_list_pane.subject.first_row = 0
-        @node_list_pane.subject.contents = self.ship.fetch_node_list resource: resource
+        @node_list_pane.subject.contents = self.ship.fetch_node_list resource: self.resource
       end
-      resource
+      nil
     end
 
-    def resync_node_view(resource)
+    def resync_node_view
       node_index = @node_list_pane.current_subject
       @node_view_pane.subject.title = "Node #{self.short_index node_index}"
       @node_view_pane.clear
-      @node_view_pane.subject.contents = self.ship.fetch_node_contents(resource: resource, index: node_index)
+      @node_view_pane.subject.contents = self.ship.fetch_node_contents(resource: self.resource, index: node_index)
+      nil
     end
 
     def short_index(index)

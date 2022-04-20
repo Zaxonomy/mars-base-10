@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'urbit/urbit'
+require 'urbit'
 
 require_relative  'graph_rover'
 require_relative  'viewport'
