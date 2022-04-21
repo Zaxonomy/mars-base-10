@@ -35,13 +35,20 @@ module MarsBase10
       self.resync
     end
 
-    def load_history(node_index:)
-      node = self.ship.fetch_node(resource: self.resource, index: node_index)
-      @node_list_pane.subject.contents = self.ship.fetch_older_nodes(resource: self.resource, node: node) + @node_list_pane.subject.contents
+    def active_index
+      @node_list_pane.current_subject
     end
 
-    def resource
+    def active_node
+      self.ship.fetch_node(resource: self.active_resource, index: self.active_index)
+    end
+
+    def active_resource
       @graph_list_pane.current_subject
+    end
+
+    def load_history
+      @node_list_pane.subject.prepend_content(ary: self.ship.fetch_older_nodes(resource: self.active_resource, node: self.active_node))
     end
 
     #
@@ -53,11 +60,9 @@ module MarsBase10
         begin
           if @node_view_pane.subject.contents[4].include?('true')
             self.viewport.action_bar.add_action({'p': 'Pop Out'})
-            resource = @graph_list_pane.current_subject
-            node_index = @node_list_pane.current_subject
-            @stack.push(resource)
+            @stack.push(self.active_resource)
             @node_list_pane.clear
-            @node_list_pane.subject.contents = self.ship.fetch_node_children resource: resource, index: node_index
+            @node_list_pane.subject.contents = self.ship.fetch_node_children(resource: self.active_resource, index: self.active_index)
             @node_list_pane.index = 0
           end
         end
@@ -102,19 +107,17 @@ module MarsBase10
 
     def resync_node_list
       if @graph_list_pane == self.viewport.active_pane
-        @node_list_pane.subject.title = "Nodes of #{self.resource}"
+        @node_list_pane.subject.title = "Nodes of #{self.active_resource}"
         @node_list_pane.clear
-        @node_list_pane.subject.first_row = 0
-        @node_list_pane.subject.contents = self.ship.fetch_node_list resource: self.resource
+        @node_list_pane.subject.contents = self.ship.fetch_node_list resource: self.active_resource
       end
       nil
     end
 
     def resync_node_view
-      node_index = @node_list_pane.current_subject
-      @node_view_pane.subject.title = "Node #{self.short_index node_index}"
+      @node_view_pane.subject.title = "Node #{self.short_index self.active_index}"
       @node_view_pane.clear
-      @node_view_pane.subject.contents = self.ship.fetch_node_contents(resource: self.resource, index: node_index)
+      @node_view_pane.subject.contents = self.ship.fetch_node_contents(resource: self.active_resource, index: self.active_index)
       nil
     end
 

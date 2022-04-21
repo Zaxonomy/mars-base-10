@@ -2,17 +2,23 @@
 
 module MarsBase10
   class Subject
-    attr_accessor :first_row, :scroll_limit, :title
+    attr_accessor :current_item, :first_item, :scroll_limit, :title
 
     def initialize(title: 'Untitled', contents:)
-      @contents   = contents
-      @first_row  = 0
-      @title      = title
+      @contents     = contents
+      @current_item = 0
+      @first_item   = 0
+      @title        = title
     end
 
-    # Returns the item at: the index: relative to the first_row.
+    def prepend_content(ary:)
+      self.contents = ary + self.contents
+      self.current_item += ary.size
+    end
+
+    # Returns the item at: the index: relative to the first_item.
     def at(index:)
-      self.contents[self.first_row + index]
+      self.contents[@current_item + index]
     end
 
     def cols
@@ -25,13 +31,13 @@ module MarsBase10
     end
 
     def contents=(a_contents_array)
-      @rows = nil
-      $cols = nil
+      @items = nil
+      $cols  = nil
       @contents = a_contents_array
     end
 
     def index_at(index:)
-      index + self.first_row + 1
+      index + @current_item + 1
     end
 
     def line_at(index:)
@@ -39,17 +45,17 @@ module MarsBase10
       "#{"%02d" % index}  #{self.at index: index}  #{"%04d" % (self.index_at index: index)}"
     end
 
-    def rows
-      return @rows if @rows
-      @rows = @contents.size
+    def items
+      return @items if @items
+      @items = @contents.size
     end
 
     def scroll_down
-      self.first_row = [self.first_row + 1, (self.rows - self.scroll_limit)].min
+      self.current_item = [self.current_item + 1, (self.items - self.scroll_limit)].min
     end
 
     def scroll_up
-      self.first_row = [self.first_row - 1, 0].max
+      self.current_item = [self.current_item - 1, 0].max
     end
   end
 end

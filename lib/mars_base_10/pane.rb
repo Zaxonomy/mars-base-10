@@ -60,7 +60,7 @@ module MarsBase10
 
     def draw_title
       self.window.setpos(0, 2)
-      self.window.addstr(" #{self.subject.title} (#{self.subject.rows} total) ")
+      self.window.addstr(" #{self.subject.title} (#{self.max_contents_rows} total) ")
     end
 
     def first_col
@@ -101,7 +101,7 @@ module MarsBase10
     end
 
     def max_contents_rows
-      self.subject.rows
+      self.subject.items
     end
 
     def min_column_width
@@ -152,10 +152,17 @@ module MarsBase10
     def set_row(i)
       self.subject.scroll_limit = [self.last_visible_row, self.max_contents_rows].min
 
+      # Check if we have tried to move "above" the visible screen limit (i = 0)
       if (i < 0)
-        self.viewport.controller.load_history(node_index: self.subject.at(index: 0))
-        self.subject.scroll_up
-        i = 0
+        i = 0  # The first visible row is always index 0
+        if self.subject.current_item > self.subject.first_item
+          # We are not at the top of the subject so we have non-visible items we can scroll to
+          self.subject.scroll_up
+        else
+          # Retrieve more items, if possible
+          self.viewport.controller.load_history
+          self.subject.scroll_up
+        end
       end
 
       # If we've reached the end of the content, it's a no-op.
@@ -164,7 +171,6 @@ module MarsBase10
       end
 
       if (i >= self.last_visible_row)
-        self.subject.scroll_down
         i -= 1
       end
 
