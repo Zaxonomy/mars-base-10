@@ -21,18 +21,13 @@ module MarsBase10
       self.contents[@current_item + index]
     end
 
-    def cols
-      return @cols if @cols
-      @cols = @contents.inject(0) {|a, n| n.length > a ? n.length : a}
-    end
-
     def contents
       @contents
     end
 
     def contents=(a_contents_array)
       @items = nil
-      $cols  = nil
+      $max_content_width  = nil
       @contents = a_contents_array
     end
 
@@ -42,12 +37,21 @@ module MarsBase10
 
     def line_at(index:)
       # The string here is the gutter followed by the window contents. improving the gutter is tbd.
-      "#{"%02d" % index}  #{self.at index: index}  #{"%04d" % (self.index_at index: index)}"
+      "#{"%02d" % index}  #{self.at index: index}  #{self.line_length_at(index: index)}"
+    end
+
+    def line_length_at(index:)
+      (self.at(index: index)).length
     end
 
     def items
       return @items if @items
       @items = @contents.size
+    end
+
+    def max_content_width
+      return @max_content_width if @max_content_width
+      @max_content_width = @contents.inject(0) {|a, n| n.length > a ? n.length : a}
     end
 
     def scroll_down

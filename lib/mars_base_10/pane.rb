@@ -42,7 +42,13 @@ module MarsBase10
       (0..(self.max_contents_rows - 1)).each do |item|
         self.window.setpos(self.draw_row, self.draw_col)
         self.window.attron(Curses::A_REVERSE) if item == self.index
-        self.window.addstr(self.subject.line_at index: item)
+
+        if self.subject.line_length_at(index: item) > self.last_col
+          self.window.addstr("#{(self.subject.line_at(index: item))[0..(self.last_col - 6)]} ..")
+        else
+          self.window.addstr("#{self.subject.line_at(index: item)}")
+        end
+
         self.window.attroff(Curses::A_REVERSE) if item == self.index
         self.window.clrtoeol
         self.draw_row += 1
@@ -105,7 +111,7 @@ module MarsBase10
     end
 
     def min_column_width
-      self.gutter_width + self.subject.cols + self.right_pad
+      self.gutter_width + self.subject.max_content_width + self.right_pad
     end
 
     def prepare_for_writing_contents
