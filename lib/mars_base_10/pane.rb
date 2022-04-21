@@ -171,6 +171,7 @@ module MarsBase10
       end
 
       if (i >= self.last_visible_row)
+        self.subject.scroll_down
         i -= 1
       end
 
