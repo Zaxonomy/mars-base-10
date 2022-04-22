@@ -39,13 +39,16 @@ module MarsBase10
     def draw
       self.prepare_for_writing_contents
 
-      last_index = [self.last_row, self.max_contents_rows].min - 1
-      (0..last_index).each do |item|
-        self.draw_line
-        self.window.attron(Curses::A_REVERSE) if item == self.index
+      first_index = [0, self.first_row].min
+      last_index  = [self.last_row, self.max_contents_rows].min - 1
 
-        if self.subject.line_length_at(index: item) > self.last_col
-          chunks = self.subject.line_at(index: item).chars.each_slice(self.last_col).map(&:join)
+      (first_index..last_index).each do |index|
+        self.draw_line
+        item_index = [index, (index + (self.index - last_index)  + 2)].max
+        self.window.attron(Curses::A_REVERSE) if item_index == self.index
+
+        if self.subject.line_length_at(index: item_index) > self.last_col
+          chunks = self.subject.line_at(index: item_index).chars.each_slice(self.last_col).map(&:join)
           chunks.each do |c|
             self.window.addstr(c)
             self.draw_row += 1
@@ -54,10 +57,10 @@ module MarsBase10
           end
           self.draw_row -= 1
         else
-          self.window.addstr("#{self.subject.line_at(index: item)}")
+          self.window.addstr("#{self.subject.line_at(index: item_index)}")
         end
 
-        self.window.attroff(Curses::A_REVERSE) if item == self.index
+        self.window.attroff(Curses::A_REVERSE) if item_index == self.index
         self.window.clrtoeol
         self.draw_row += 1
       end
@@ -173,14 +176,16 @@ module MarsBase10
       # Check if we have tried to move "above" the visible screen limit (i = 0)
       if (i < 0)
         i = 0  # The first visible row is always index 0
-        if self.subject.current_item > i # self.subject.first_item
+        # if self.subject.current_item > i # self.subject.first_item
           # We are not at the top of the subject so we have non-visible items we can scroll to
           # self.subject.scroll_up
-        else
+        # else
           # Retrieve more items, if possible
-          self.viewport.controller.load_history
+          i = self.viewport.controller.load_history - 1
+
+          # self.current_item += ary.size
           # self.subject.scroll_up
-        end
+        # end
       end
 
       # If we've reached the end of the content, it's a no-op.
@@ -188,10 +193,10 @@ module MarsBase10
         i -= 1
       end
 
-      if (i >= self.last_visible_row)
+      # if (i >= self.last_visible_row)
         # self.subject.scroll_down
-        i -= 1
-      end
+        # i += 1
+      # end
 
       self.index = i # if (i <= self.max_contents_rows) && (i >= 0)
     end

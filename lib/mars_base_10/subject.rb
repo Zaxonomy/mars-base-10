@@ -6,13 +6,12 @@ module MarsBase10
 
     def initialize(title: 'Untitled', contents:)
       @contents     = contents
-      @current_item = 0
+      # @current_item = 0
       @title        = title
     end
 
     def prepend_content(ary:)
       self.contents = ary + self.contents
-      self.current_item += ary.size
     end
 
     # Returns the item at: the index: relative to the current_item.
@@ -35,7 +34,7 @@ module MarsBase10
 
     def line_at(index:)
       # The string here is the gutter followed by the window contents. improving the gutter is tbd.
-      "#{"%02d" % (index)}  #{self.at(index: index)}"
+      "#{"%04d" % (index)}  #{self.at(index: index)}"
     end
 
     def line_length_at(index:)
