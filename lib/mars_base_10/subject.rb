@@ -6,7 +6,6 @@ module MarsBase10
 
     def initialize(title: 'Untitled', contents:)
       @contents     = contents
-      # @current_item = 0
       @title        = title
     end
 
@@ -24,13 +23,8 @@ module MarsBase10
     end
 
     def contents=(a_contents_array)
-      # @current_item = 0
       @contents = a_contents_array
     end
-
-    # def index_at(index:)
-    #   index + @current_item + 1
-    # end
 
     def line_at(index:)
       # The string here is the gutter followed by the window contents. improving the gutter is tbd.
@@ -48,14 +42,6 @@ module MarsBase10
 
     def max_content_width
       @contents.inject(0) {|a, n| n.length > a ? n.length : a}
-    end
-
-    def scroll_down
-      self.current_item = [self.current_item + 1, (self.item_count - self.scroll_limit)].min
-    end
-
-    def scroll_up
-      self.current_item = [self.current_item - 1, 0].max
     end
   end
 end
