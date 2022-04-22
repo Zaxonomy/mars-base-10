@@ -37,10 +37,11 @@ module MarsBase10
 
     def line_at(index:)
       # The string here is the gutter followed by the window contents. improving the gutter is tbd.
-      "#{"%02d" % index}  #{self.at index: index}  #{self.line_length_at(index: index)}"
+      "#{"%02d" % index}  #{self.at index: index}"
     end
 
     def line_length_at(index:)
+      return 0 if self.at(index: index).nil?
       (self.at(index: index)).length
     end
 

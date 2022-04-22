@@ -39,12 +39,20 @@ module MarsBase10
     def draw
       self.prepare_for_writing_contents
 
-      (0..(self.max_contents_rows - 1)).each do |item|
-        self.window.setpos(self.draw_row, self.draw_col)
+      last_index = self.max_contents_rows - 1
+      (0..last_index).each do |item|
+        self.draw_line
         self.window.attron(Curses::A_REVERSE) if item == self.index
 
         if self.subject.line_length_at(index: item) > self.last_col
-          self.window.addstr("#{(self.subject.line_at(index: item))[0..(self.last_col - 6)]} ..")
+          chunks = self.subject.line_at(index: item).chars.each_slice(self.last_col).map(&:join)
+          chunks.each do |c|
+            self.window.addstr(c)
+            self.draw_row += 1
+            self.draw_line
+            last_index -= 1
+          end
+          self.draw_row -= 1
         else
           self.window.addstr("#{self.subject.line_at(index: item)}")
         end
@@ -62,6 +70,10 @@ module MarsBase10
       self.window.box
       self.draw_title
       self.window.attroff(Curses.color_pair(1) | Curses::A_BOLD) if self.active?
+    end
+
+    def draw_line
+      self.window.setpos(self.draw_row, self.draw_col)
     end
 
     def draw_title
