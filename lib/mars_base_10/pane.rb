@@ -32,14 +32,14 @@ module MarsBase10
       end
     end
 
-    def current_subject
-      self.subject.at index: self.index
+    def current_subject_index
+      self.subject.at(index: self.index)
     end
 
     def draw
       self.prepare_for_writing_contents
 
-      last_index = self.max_contents_rows - 1
+      last_index = [self.last_row, self.max_contents_rows].min - 1
       (0..last_index).each do |item|
         self.draw_line
         self.window.attron(Curses::A_REVERSE) if item == self.index
@@ -119,7 +119,7 @@ module MarsBase10
     end
 
     def max_contents_rows
-      self.subject.items
+      self.subject.item_count
     end
 
     def min_column_width
@@ -168,18 +168,18 @@ module MarsBase10
     # this is a no-op if the index is out of range
     #
     def set_row(i)
-      self.subject.scroll_limit = [self.last_visible_row, self.max_contents_rows].min
+      # self.subject.scroll_limit = [self.last_visible_row, self.max_contents_rows].min
 
       # Check if we have tried to move "above" the visible screen limit (i = 0)
       if (i < 0)
         i = 0  # The first visible row is always index 0
-        if self.subject.current_item > self.subject.first_item
+        if self.subject.current_item > i # self.subject.first_item
           # We are not at the top of the subject so we have non-visible items we can scroll to
-          self.subject.scroll_up
+          # self.subject.scroll_up
         else
           # Retrieve more items, if possible
           self.viewport.controller.load_history
-          self.subject.scroll_up
+          # self.subject.scroll_up
         end
       end
 
@@ -189,14 +189,14 @@ module MarsBase10
       end
 
       if (i >= self.last_visible_row)
-        self.subject.scroll_down
+        # self.subject.scroll_down
         i -= 1
       end
 
       self.index = i # if (i <= self.max_contents_rows) && (i >= 0)
     end
 
-    def viewing(subject:)
+    def view(subject:)
       @subject = subject
     end
 
