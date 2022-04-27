@@ -27,9 +27,13 @@ module MarsBase10
       @contents = a_contents_array
     end
 
+    def index_width
+      self.item_count.to_s.length
+    end
+
     def line_at(index:)
       # The string here is the gutter followed by the window contents. improving the gutter is tbd.
-      "#{"%04d" % (index)}  #{self.at(index: index)}"
+      "#{"%0#{self.index_width}d" % (index)}  #{self.at(index: index)}"
     end
 
     def line_length_at(index:)

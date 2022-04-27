@@ -45,11 +45,7 @@ module MarsBase10
 
       (first_draw_row..last_draw_row).each do |index|
         self.draw_line
-        # if self.last_visible_row < self.max_contents_rows
-          item_index = index + @visible_content_shift
-        # else
-        #   item_index = [index, (index + (self.index - last_draw_index) + 2)].max
-        # end
+        item_index = index + @visible_content_shift
         self.window.attron(Curses::A_REVERSE) if item_index == self.index
 
         if self.subject.line_length_at(index: item_index) > self.last_col
@@ -98,7 +94,7 @@ module MarsBase10
     end
 
     def gutter_width
-      4
+      self.subject.index_width
     end
 
     #
