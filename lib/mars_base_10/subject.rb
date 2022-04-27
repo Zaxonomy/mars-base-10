@@ -15,7 +15,8 @@ module MarsBase10
 
     # Returns the item at: the index: relative to the current_item.
     def at(index:)
-      self.contents[index]
+      index = [1, index].max
+      self.contents[index - 1]
     end
 
     def contents
@@ -38,6 +39,10 @@ module MarsBase10
 
     def item_count
       @contents.size
+    end
+
+    def item_index_range
+      1..self.item_count
     end
 
     def max_content_width

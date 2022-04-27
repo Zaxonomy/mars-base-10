@@ -10,11 +10,12 @@ module MarsBase10
       @top_row       = at_row
       @left_edge_col = at_col
       @height_pct    = height_pct
-      @index         = 0
+      @index         = 1
       @latch         = -1
       @subject       = nil
       @win           = nil
       @viewport      = viewport
+      @visible_content_shift = 0
       @width_pct     = width_pct
     end
 
@@ -39,12 +40,16 @@ module MarsBase10
     def draw
       self.prepare_for_writing_contents
 
-      first_index = [0, self.first_row].min
-      last_index  = [self.last_row, self.max_contents_rows].min - 1
+      first_draw_row = self.first_row
+      last_draw_row  = self.last_drawable_row
 
-      (first_index..last_index).each do |index|
+      (first_draw_row..last_draw_row).each do |index|
         self.draw_line
-        item_index = [index, (index + (self.index - last_index)  + 2)].max
+        # if self.last_visible_row < self.max_contents_rows
+          item_index = index + @visible_content_shift
+        # else
+        #   item_index = [index, (index + (self.index - last_draw_index) + 2)].max
+        # end
         self.window.attron(Curses::A_REVERSE) if item_index == self.index
 
         if self.subject.line_length_at(index: item_index) > self.last_col
@@ -53,7 +58,7 @@ module MarsBase10
             self.window.addstr(c)
             self.draw_row += 1
             self.draw_line
-            last_index -= 1
+            last_draw_row -= 1  # pull the last drawing row in 1 for each new line added.
           end
           self.draw_row -= 1
         else
@@ -103,6 +108,10 @@ module MarsBase10
       [(self.viewport.max_cols * self.width_pct).floor, self.min_column_width].max
     end
 
+    def last_drawable_row
+      [self.last_visible_row, self.max_contents_rows].min
+    end
+
     #
     # This is the _relative_ last row, e.g. the height of the pane in columns.
     #
@@ -122,7 +131,7 @@ module MarsBase10
     end
 
     def max_contents_rows
-      self.subject.item_count
+      self.subject.item_index_range.last
     end
 
     def min_column_width
@@ -145,14 +154,14 @@ module MarsBase10
       key = self.window.getch.to_s
       case key
       when 'j'
-        self.set_row(self.index + 1)
+        self.index = self.set_row(self.index + 1)
       when 'k'
-        self.set_row(self.index - 1)
+        self.index = self.set_row(self.index - 1)
       when 'q'
         exit 0
       when ('0'..'9')
         if self.latched?
-          self.set_row((self.latch * 10) + key.to_i)
+          self.index = self.set_row((self.latch * 10) + key.to_i)
           self.latch = -1
         else
           self.latch = key.to_i
@@ -167,42 +176,40 @@ module MarsBase10
       2
     end
 
+    def scroll_to_row(index)
+      if index > self.index
+        # Scrolling down
+        @visible_content_shift = [(index - self.last_drawable_row), 0].max
+      else
+        # Scrolling up
+        @visible_content_shift = [(index - self.first_row), 0].max
+      end
+      [index, 1].max
+    end
+
     #
     # this is a no-op if the index is out of range
     #
     def set_row(i)
-      # self.subject.scroll_limit = [self.last_visible_row, self.max_contents_rows].min
-
-      # Check if we have tried to move "above" the visible screen limit (i = 0)
-      if (i < 0)
-        i = 0  # The first visible row is always index 0
-        # if self.subject.current_item > i # self.subject.first_item
-          # We are not at the top of the subject so we have non-visible items we can scroll to
-          # self.subject.scroll_up
-        # else
-          # Retrieve more items, if possible
-          i = self.viewport.controller.load_history - 1
-
-          # self.current_item += ary.size
-          # self.subject.scroll_up
-        # end
-      end
+      return i if self.visible_content_range.include?(i)
 
       # If we've reached the end of the content, it's a no-op.
-      if (i >= self.max_contents_rows)
-        i -= 1
+      return 1 if (i > self.max_contents_rows)
+
+      # Check if we have tried to move "above" the visible screen limit (i = 1) and retrieve more items, if possible.
+      if (i < 1)
+        i = [self.viewport.controller.load_history, 1].max
       end
 
-      # if (i >= self.last_visible_row)
-        # self.subject.scroll_down
-        # i += 1
-      # end
-
-      self.index = i # if (i <= self.max_contents_rows) && (i >= 0)
+      return self.scroll_to_row(i)
     end
 
     def view(subject:)
       @subject = subject
+    end
+
+    def visible_content_range
+      ((self.first_row + @visible_content_shift)..(self.last_drawable_row + @visible_content_shift))
     end
 
     def window

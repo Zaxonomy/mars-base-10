@@ -33,6 +33,7 @@ module MarsBase10
     end
 
     def load_history
+      return 0 unless @node_list_pane == self.viewport.active_pane
       new_content = self.ship.fetch_older_nodes(resource: self.active_resource, node: self.active_node)
       @node_list_pane.subject.prepend_content(ary: new_content)
       new_content.length
@@ -51,7 +52,7 @@ module MarsBase10
             @stack.push(self.active_resource)
             @node_list_pane.clear
             @node_list_pane.subject.contents = self.ship.fetch_node_children(resource: self.active_resource, index: self.active_node_index)
-            @node_list_pane.index = 0
+            @node_list_pane.index = 1
           end
         end
       when 'i'    # (I)nspect
@@ -70,7 +71,7 @@ module MarsBase10
           if (resource = @stack.pop)
             @node_list_pane.clear
             @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: resource)
-            @node_list_pane.index = 0
+            @node_list_pane.index = 1
           end
           if (@stack.length == 0)
             self.viewport.action_bar.remove_action(:p)
@@ -101,7 +102,7 @@ module MarsBase10
         @node_list_pane.clear
         @node_list_pane.subject.title = "Nodes of #{self.active_resource}"
         @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: self.active_resource)
-        # @node_list_pane.index = 0
+        @node_list_pane.index = 1
       end
       nil
     end
