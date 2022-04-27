@@ -28,7 +28,7 @@ module MarsBase10
     end
 
     def index_width
-      self.item_count.to_s.length
+      [self.item_count.to_s.length, 2].max
     end
 
     def line_at(index:)

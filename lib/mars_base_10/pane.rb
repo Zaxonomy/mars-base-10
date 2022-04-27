@@ -11,7 +11,8 @@ module MarsBase10
       @left_edge_col = at_col
       @height_pct    = height_pct
       @index         = 1
-      @latch         = -1
+      @latch         = ''
+      @latch_depth   = 0
       @subject       = nil
       @win           = nil
       @viewport      = viewport
@@ -123,7 +124,7 @@ module MarsBase10
     # The pane is latched if it has consumed 1 key 0-9 and is awaiting the next key.
     #
     def latched?
-      self.latch != -1
+      @latch_depth > 0
     end
 
     def max_contents_rows
@@ -157,10 +158,16 @@ module MarsBase10
         exit 0
       when ('0'..'9')
         if self.latched?
-          self.index = self.set_row((self.latch * 10) + key.to_i)
-          self.latch = -1
+          self.latch << key
+          @latch_depth += 1
+          if @latch_depth == self.gutter_width
+            self.index = self.set_row(self.latch.to_i)
+            self.latch = ""
+            @latch_depth = 0
+          end
         else
-          self.latch = key.to_i
+          self.latch = key
+          @latch_depth = 1
         end
       end
 
