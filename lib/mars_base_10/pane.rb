@@ -25,6 +25,7 @@ module MarsBase10
     end
 
     def clear
+      self.reset
       self.prepare_for_writing_contents
       (0..(self.last_row - 1)).each do |item|
         self.window.setpos(self.draw_row, self.draw_col)
@@ -154,6 +155,10 @@ module MarsBase10
         self.index = self.set_row(self.index + 1)
       when 'k'
         self.index = self.set_row(self.index - 1)
+      when 'J'
+        self.index = self.set_row([self.index + (self.last_visible_row), self.max_contents_rows].min)
+      when 'K'
+        self.index = self.set_row(self.index - (self.last_visible_row))
       when 'q'
         exit 0
       when ('0'..'9')
@@ -173,6 +178,13 @@ module MarsBase10
 
       # Always send the key to the controller for additional processing...
       self.viewport.controller.send key: key
+    end
+
+    def reset
+      @index = 1
+      @latch = ''
+      @latch_depth = 0
+      @visible_content_shift = 0
     end
 
     def right_pad
@@ -197,7 +209,8 @@ module MarsBase10
       return i if self.visible_content_range.include?(i)
 
       # If we've reached the end of the content, it's a no-op.
-      return 1 if (i > self.max_contents_rows)
+      current_index = self.index
+      return self.max_contents_rows if (i > self.max_contents_rows)
 
       # Check if we have tried to move "above" the visible screen limit (i = 1) and retrieve more items, if possible.
       if (i < 1)

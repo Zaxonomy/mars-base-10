@@ -52,7 +52,6 @@ module MarsBase10
             @stack.push(self.active_resource)
             @node_list_pane.clear
             @node_list_pane.subject.contents = self.ship.fetch_node_children(resource: self.active_resource, index: self.active_node_index)
-            @node_list_pane.index = 1
           end
         end
       when 'i'    # (I)nspect
@@ -64,14 +63,13 @@ module MarsBase10
       when 'g'    # (G)raph View
         unless @graph_list_pane.active?
           self.viewport.activate pane: @graph_list_pane
-          resync_needed = false
+          # resync_needed = false
         end
       when 'p'    # (P)op
         begin
           if (resource = @stack.pop)
             @node_list_pane.clear
             @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: resource)
-            @node_list_pane.index = 1
           end
           if (@stack.length == 0)
             self.viewport.action_bar.remove_action(:p)
@@ -102,7 +100,6 @@ module MarsBase10
         @node_list_pane.clear
         @node_list_pane.subject.title = "Nodes of #{self.active_resource}"
         @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: self.active_resource)
-        @node_list_pane.index = 1
       end
       nil
     end
