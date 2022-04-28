@@ -96,7 +96,6 @@ module MarsBase10
 
     def resync_node_list
       if @graph_list_pane == self.viewport.active_pane
-        @ship.clear
         @node_list_pane.clear
         @node_list_pane.subject.title = "Nodes of #{self.active_resource}"
         @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: self.active_resource)

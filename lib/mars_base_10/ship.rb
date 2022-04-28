@@ -8,10 +8,6 @@ module MarsBase10
       @ship = connection
     end
 
-    def clear
-      @ship.graphs(flush_cache: true)
-    end
-
     def empty_node
       Subject.new title: 'Node', contents: []
     end
