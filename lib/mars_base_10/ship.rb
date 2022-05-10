@@ -8,16 +8,16 @@ module MarsBase10
       @ship = connection
     end
 
-    def graph_names
-      Subject.new title: 'Graphs', contents: @ship.graph_names
-    end
-
-    def node
+    def empty_node
       Subject.new title: 'Node', contents: []
     end
 
-    def node_list
+    def empty_node_list
       Subject.new title: 'Node List', contents: []
+    end
+
+    def graph_names
+      Subject.new title: 'Graphs', contents: @ship.graph_names
     end
 
     def fetch_node(resource:, index:)
@@ -34,7 +34,11 @@ module MarsBase10
     end
 
     def fetch_node_list(resource:)
-      @ship.graph(resource: resource).newest_nodes(count: 20).map {|node| node.index}.sort
+      @ship.graph(resource: resource).newest_nodes(count: 60).map {|node| node.index}.sort
+    end
+
+    def fetch_older_nodes(resource:, node:)
+      @ship.graph(resource: resource).older_sibling_nodes(node: node, count: 60).map {|node| node.index}.sort
     end
   end
 end

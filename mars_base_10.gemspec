@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "sorted_set", "~> 1.0"
   spec.add_dependency "thor",       "~> 1.1"
   spec.add_dependency "tty-font",   "~> 0.5"
-  spec.add_dependency "urbit-api",  "~> 0.2.1"
+  spec.add_dependency "urbit-api",  "~> 0.5"
 
   spec.add_development_dependency "pry",     "~> 0.13"
   spec.add_development_dependency "rspec",   "~> 3.10"

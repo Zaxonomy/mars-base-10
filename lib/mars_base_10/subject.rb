@@ -2,22 +2,21 @@
 
 module MarsBase10
   class Subject
-    attr_accessor :first_row, :scroll_limit, :title
+    attr_accessor :current_item, :scroll_limit, :title
 
     def initialize(title: 'Untitled', contents:)
-      @contents   = contents
-      @first_row  = 0
-      @title      = title
+      @contents     = contents
+      @title        = title
     end
 
-    # Returns the item at: the index: relative to the first_row.
+    def prepend_content(ary:)
+      self.contents = ary + self.contents
+    end
+
+    # Returns the item at: the index: relative to the current_item.
     def at(index:)
-      self.contents[self.first_row + index]
-    end
-
-    def cols
-      return @cols if @cols
-      @cols = @contents.inject(0) {|a, n| n.length > a ? n.length : a}
+      index = [1, index].max
+      self.contents[index - 1]
     end
 
     def contents
@@ -25,22 +24,33 @@ module MarsBase10
     end
 
     def contents=(a_contents_array)
-      @rows = nil
-      $cols = nil
       @contents = a_contents_array
     end
 
-    def rows
-      return @rows if @rows
-      @rows = @contents.size
+    def index_width
+      [self.item_count.to_s.length, 2].max
     end
 
-    def scroll_down
-      self.first_row = [self.first_row + 1, (self.rows - self.scroll_limit)].min
+    def line_at(index:)
+      # The string here is the gutter followed by the window contents. improving the gutter is tbd.
+      "#{"%0#{self.index_width}d" % (index)}  #{self.at(index: index)}"
     end
 
-    def scroll_up
-      self.first_row = [self.first_row - 1, 0].max
+    def line_length_at(index:)
+      return 0 if self.at(index: index).nil?
+      (self.at(index: index)).length
+    end
+
+    def item_count
+      @contents.size
+    end
+
+    def item_index_range
+      1..self.item_count
+    end
+
+    def max_content_width
+      @contents.inject(0) {|a, n| n.length > a ? n.length : a}
     end
   end
 end
