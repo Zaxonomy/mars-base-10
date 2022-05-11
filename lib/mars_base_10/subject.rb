@@ -27,6 +27,10 @@ module MarsBase10
       @contents = a_contents_array
     end
 
+    def empty?
+      self.contents.empty?
+    end
+
     def index_width
       [self.item_count.to_s.length, 2].max
     end

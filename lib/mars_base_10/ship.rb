@@ -20,6 +20,17 @@ module MarsBase10
       Subject.new title: 'Graphs', contents: @ship.graph_names
     end
 
+    def group_names
+      Subject.new title: 'Groups', contents: (@ship.groups.map {|g| g.to_list})
+    end
+
+    def fetch_group_channels(group_title:)
+      if (group = @ship.groups[title: group_title])
+        return group.graphs.map {|g| g.nil? ? "Unnamed" : g.title}
+      end
+      ["No Channels Available."]
+    end
+
     def fetch_node(resource:, index:)
       @ship.graph(resource: resource).node(index: index)
     end
