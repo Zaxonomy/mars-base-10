@@ -24,6 +24,33 @@ module MarsBase10
       Subject.new title: 'Groups', contents: (@ship.groups.map {|g| g.to_list})
     end
 
+    def fetch_channel(group_title:, channel_title:)
+      if (group = @ship.groups[title: group_title])
+        if (channel = group.graphs.select {|c| channel_title == c.title unless c.nil?}.first)
+          # What we are calling a channel here is really a graph in the urbit-ruby bridge.
+          # This is the equivalent of node.to_pretty_array
+          props = {
+            title: channel.title,
+            description: channel.description,
+            creator: channel.creator,
+            host_ship: channel.host_ship,
+            resource: channel.resource,
+            type: channel.type
+          }
+          return props.each.map {|k, v| "#{k}#{(' ' * [(18 - k.length), 0].max)}#{v}"}
+        end
+      end
+      ["Group not found."]
+    end
+
+    def fetch_group(group_title:)
+      if (group = @ship.groups[title: group_title])
+        # This is the equivalent of node.to_pretty_array
+        return group.to_h.each.map {|k, v| "#{k}#{(' ' * [(18 - k.length), 0].max)}#{v}"}
+      end
+      ["Group not found."]
+    end
+
     def fetch_group_channels(group_title:)
       if (group = @ship.groups[title: group_title])
         return group.graphs.map {|g| g.nil? ? "Unnamed" : g.title}

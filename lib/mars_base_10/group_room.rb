@@ -20,16 +20,16 @@ module MarsBase10
       self.resync
     end
 
-    def active_node_index
-      @pane_2.current_subject_index
-    end
-
     def active_node
       self.ship.fetch_node(resource: self.active_resource, index: self.active_node_index)
     end
 
     def active_resource
       @pane_1.current_subject_index
+    end
+
+    def active_subject(pane:)
+      pane.current_subject_index
     end
 
     def load_history
@@ -47,7 +47,7 @@ module MarsBase10
       case key
       when 'd'    # (D)ive
         begin
-          if @node_view_pane.subject.contents[4].include?('true')
+          if @pane_3.subject.contents[4].include?('true')
             self.viewport.action_bar.add_action({'p': 'Pop Out'})
             @stack.push(self.active_resource)
             @pane_2.clear
@@ -91,29 +91,25 @@ module MarsBase10
 
     def resync
       self.resync_node_list
-      # self.resync_node_view
+      self.resync_node_view
     end
 
     def resync_node_list
       if @pane_1 == self.viewport.active_pane
         @pane_2.clear
-        @pane_2.subject.title = "Channels of #{self.active_resource}"
-        @pane_2.subject.contents = self.ship.fetch_group_channels(group_title: self.active_resource)
+        @pane_2.subject.title = "Channels of #{self.active_subject(pane: @pane_1)}"
+        @pane_2.subject.contents = self.ship.fetch_group_channels(group_title: self.active_subject(pane: @pane_1))
       end
       nil
     end
 
     def resync_node_view
-      @node_view_pane.subject.title = "Node #{self.short_index self.active_node_index}"
-      @node_view_pane.clear
-      @node_view_pane.subject.contents = self.ship.fetch_node_contents(resource: self.active_resource, index: self.active_node_index)
+      channel_title = self.active_subject(pane: @pane_2)
+      @pane_3.subject.title = "#{channel_title}"
+      @pane_3.clear
+      @pane_3.subject.contents = self.ship.fetch_channel(group_title: self.active_subject(pane: @pane_1), channel_title: channel_title)
+      # @pane_3.subject.contents = self.ship.fetch_group(group_title: self.active_subject(pane: @pane_1))
       nil
-    end
-
-    def short_index(index)
-      return "" if index.nil?
-      tokens = index.split('.')
-      "#{tokens[0]}..#{tokens[tokens.size - 2]}.#{tokens[tokens.size - 1]}"
     end
 
     def wire_up_panes
@@ -132,8 +128,8 @@ module MarsBase10
       @pane_2.view(subject: @ship.empty_node_list)
 
       # The single node viewer is a variable width, variable height pane in the lower right.
-      @node_view_pane = @viewport.add_variable_both_pane at_row: @pane_2.last_row, at_col: @pane_1.last_col
-      @node_view_pane.view(subject: @ship.empty_node)
+      @pane_3 = @viewport.add_variable_both_pane at_row: @pane_2.last_row, at_col: @pane_1.last_col
+      @pane_3.view(subject: @ship.empty_node)
     end
   end
 end
