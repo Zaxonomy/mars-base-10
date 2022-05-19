@@ -244,6 +244,12 @@ module MarsBase10
     end
   end
 
+  class VariableHeightPane < Pane
+    def last_row
+      self.viewport.max_rows - self.top_row
+    end
+  end
+
   class VariableWidthPane < Pane
     def last_col
       self.viewport.max_cols - self.left_edge_col
