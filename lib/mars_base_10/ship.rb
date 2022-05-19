@@ -30,12 +30,12 @@ module MarsBase10
           # What we are calling a channel here is really a graph in the urbit-ruby bridge.
           # This is the equivalent of node.to_pretty_array
           props = {
-            title: channel.title,
+            title:       channel.title,
             description: channel.description,
-            creator: channel.creator,
-            host_ship: channel.host_ship,
-            resource: channel.resource,
-            type: channel.type
+            creator:     channel.creator,
+            host_ship:   channel.host_ship,
+            resource:    channel.resource,
+            type:        channel.type
           }
           return props.each.map {|k, v| "#{k}#{(' ' * [(18 - k.length), 0].max)}#{v}"}
         end

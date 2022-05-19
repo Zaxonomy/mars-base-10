@@ -3,13 +3,14 @@ require 'curses'
 
 module MarsBase10
   class Pane
-    attr_accessor :draw_row, :draw_col, :index, :latch, :subject
+    attr_accessor :draw_row, :draw_col, :highlight, :index, :latch, :subject
     attr_reader   :height_pct, :left_edge_col, :top_row, :viewport, :width_pct
 
     def initialize(viewport:, at_row:, at_col:, height_pct: 1, width_pct: 1)
       @top_row       = at_row
       @left_edge_col = at_col
       @height_pct    = height_pct
+      @highlight     = true
       @index         = 1
       @latch         = ''
       @latch_depth   = 0
@@ -48,10 +49,10 @@ module MarsBase10
       (first_draw_row..last_draw_row).each do |index|
         self.draw_line
         item_index = index + @visible_content_shift
-        self.window.attron(Curses::A_REVERSE) if item_index == self.index
+        self.window.attron(Curses::A_REVERSE) if (item_index == self.index) && self.highlight
 
         if self.subject.line_length_at(index: item_index) > self.last_col
-          chunks = self.subject.line_at(index: item_index).chars.each_slice(self.last_col).map(&:join)
+          chunks = self.subject.line_at(index: item_index).chars.each_slice(self.last_col - 2).map(&:join)
           chunks.each do |c|
             self.window.addstr(c)
             self.draw_row += 1
@@ -63,7 +64,7 @@ module MarsBase10
           self.window.addstr("#{self.subject.line_at(index: item_index)}")
         end
 
-        self.window.attroff(Curses::A_REVERSE) if item_index == self.index
+        self.window.attroff(Curses::A_REVERSE) if (item_index == self.index) && self.highlight
         self.window.clrtoeol
         self.draw_row += 1
       end
@@ -245,6 +246,10 @@ module MarsBase10
   end
 
   class VariableHeightPane < Pane
+    def last_col
+      (self.viewport.max_cols * self.width_pct).floor
+    end
+
     def last_row
       self.viewport.max_rows - self.top_row
     end

@@ -45,35 +45,15 @@ module MarsBase10
     def send(key:)
       resync_needed = true
       case key
-      when 'd'    # (D)ive
-        begin
-          if @pane_4.subject.contents[4].include?('true')
-            self.viewport.action_bar.add_action({'p': 'Pop Out'})
-            @stack.push(self.active_resource)
-            @pane_3.clear
-            @pane_3.subject.contents = self.ship.fetch_node_children(resource: self.active_resource, index: self.active_node_index)
-          end
-        end
       when 'i'    # (I)nspect
         begin
           self.viewport.activate pane: @pane_3
-          self.viewport.action_bar = ActionBar.Default.add_action({'d': 'Dive In', 'g': 'Graph List'})
+          self.viewport.action_bar = ActionBar.Default.add_action({'g': 'Group List'})
           resync_needed = false
         end
       when 'g'    # (G)raph View
         unless @pane_1.active?
           self.viewport.activate pane: @pane_1
-          # resync_needed = false
-        end
-      when 'p'    # (P)op
-        begin
-          if (resource = @stack.pop)
-            @pane_3.clear
-            @pane_3.subject.contents = self.ship.fetch_node_list(resource: resource)
-          end
-          if (@stack.length == 0)
-            self.viewport.action_bar.remove_action(:p)
-          end
         end
       end
       self.resync if resync_needed
@@ -113,7 +93,6 @@ module MarsBase10
       @pane_4.subject.title = "#{channel_title}"
       @pane_4.clear
       @pane_4.subject.contents = self.ship.fetch_channel(group_title: self.active_subject(pane: @pane_1), channel_title: channel_title)
-      # @pane_4.subject.contents = self.ship.fetch_group(group_title: self.active_subject(pane: @pane_1))
       nil
     end
 
@@ -121,7 +100,7 @@ module MarsBase10
       @panes = []
 
       # Pane #1 is the Group list, It is a fixed height and width in the upper left corner.
-      @pane_1 = @viewport.add_pane height_pct: 0.5, width_pct: 0.3
+      @pane_1 = @viewport.add_pane height_pct: 0.5, width_pct: 0.5
       # if @ship.group_names.empty?
         # @pane_1.view(subject: @ship.graph_names)
       # else
@@ -129,8 +108,9 @@ module MarsBase10
       # end
 
       # Pane 2 displays the properties of the selected Group. It is variable height in the bottom left corner.
-      @pane_2 = @viewport.add_variable_height_pane at_row: @pane_1.last_row, width_pct: 0.3
+      @pane_2 = @viewport.add_variable_height_pane at_row: @pane_1.last_row, width_pct: 0.5
       @pane_2.view(subject: @ship.empty_node)
+      @pane_2.highlight = false
 
       # The node list is a variable width, fixed height pane in the upper right.
       @pane_3 = @viewport.add_variable_width_pane at_col: @pane_1.last_col, height_pct: 0.5
@@ -139,6 +119,7 @@ module MarsBase10
       # The single node viewer is a variable width, variable height pane in the lower right.
       @pane_4 = @viewport.add_variable_both_pane at_row: @pane_3.last_row, at_col: @pane_1.last_col
       @pane_4.view(subject: @ship.empty_node)
+      @pane_4.highlight = false
     end
   end
 end
