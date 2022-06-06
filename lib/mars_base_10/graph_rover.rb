@@ -6,9 +6,10 @@ require_relative 'subject'
 
 module MarsBase10
   class GraphRover
-    attr_reader :panes, :ship, :viewport
+    attr_reader :manager, :panes, :ship, :viewport
 
-    def initialize(ship_connection:, viewport:)
+    def initialize(manager:, ship_connection:, viewport:)
+      @manager = manager
       @ship = Ship.new connection: ship_connection
       @stack = Stack.new
       @viewport = viewport
@@ -75,6 +76,8 @@ module MarsBase10
             self.viewport.action_bar.remove_action(:p)
           end
         end
+      when 'X'
+        self.manager.swap_controller
       end
       self.resync if resync_needed
     end

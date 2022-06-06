@@ -6,9 +6,10 @@ require_relative 'subject'
 
 module MarsBase10
   class GroupRoom
-    attr_reader :panes, :ship, :viewport
+    attr_reader :manager, :panes, :ship, :viewport
 
-    def initialize(ship_connection:, viewport:)
+    def initialize(manager:, ship_connection:, viewport:)
+      @manager = manager
       @ship = Ship.new connection: ship_connection
       @stack = Stack.new
       @viewport = viewport
@@ -45,16 +46,18 @@ module MarsBase10
     def send(key:)
       resync_needed = true
       case key
+      when 'g'    # (G)raph View
+        unless @pane_1.active?
+          self.viewport.activate pane: @pane_1
+        end
       when 'i'    # (I)nspect
         begin
           self.viewport.activate pane: @pane_3
           self.viewport.action_bar = ActionBar.Default.add_action({'g': 'Group List'})
           resync_needed = false
         end
-      when 'g'    # (G)raph View
-        unless @pane_1.active?
-          self.viewport.activate pane: @pane_1
-        end
+      when 'X'
+        self.manager.swap_controller
       end
       self.resync if resync_needed
     end

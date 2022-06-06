@@ -11,7 +11,7 @@ module MarsBase10
     end
 
     def self.Default
-      ActionBar.new actions: {'j': 'Move Down', 'k': 'Move Up', 'J': 'Page Down', 'K': 'Page Up', 'q': 'Quit'}
+      ActionBar.new actions: {'j': 'Move Down', 'k': 'Move Up', 'J': 'Page Down', 'K': 'Page Up', 'X': 'Switch App', 'q': 'Quit'}
     end
 
     def actions_first_col

@@ -11,15 +11,23 @@ module MarsBase10
   class CommCentral
     def initialize(config_filename:)
       @viewport = Viewport.new
-      ship = Urbit.connect(config_file: config_filename)
-      ship.login
+      @ship = Urbit.connect(config_file: config_filename)
+      @ship.login
       sleep 2  # This is temporary for now, we need a way to know that the subscription callbacks have finished.
-      # @controller    = GraphRover.new ship_connection: Urbit.connect(config_file: config_filename),
-      #                            viewport:        @viewport
-      @controller    = GroupRoom.new ship_connection: ship, viewport: @viewport
+      @controller = GroupRoom.new manager: self, ship_connection: @ship, viewport: @viewport
     end
 
     def activate
+      self.controller.start
+    end
+
+    def swap_controller
+      self.controller.stop
+      if GroupRoom == self.controller.class
+        @controller = GraphRover.new manager: self, ship_connection: self.ship, viewport: @viewport
+      else
+        @controller = GroupRoom.new  manager: self, ship_connection: self.ship, viewport: @viewport
+      end
       self.controller.start
     end
 
@@ -31,6 +39,10 @@ module MarsBase10
 
     def controller
       @controller
+    end
+
+    def ship
+      @ship
     end
   end
 end
