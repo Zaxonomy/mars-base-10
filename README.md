@@ -38,7 +38,25 @@ Options:
 ```
 ### Basic Usage and Navigation
 
-When you initially open the app you will see the Graph Explorer with the graph list pane highlighted in red:
+#### Group Explorer
+
+When you initially open the app you will see the Group Explorer with the group list pane highlighted in red:
+
+![Group Explorer](screenshots/group-list-pane.png)
+
+Properties of the group are displayed below in the Group details pane.
+
+From here you can choose a group by moving up (k) and down (j) using vim-style motion or jump immediately by typing the row number (04).
+The channel list pane will change automatically as you change the group.
+Use "Inspect" (i) to select a group and move the focus to the channel list pane.
+
+![Channel List](screenshots/channel-list-pane.png)
+
+Properties of the channel are displayed below in the Channel details pane.
+
+By pressing "Switch App" (X) you will swap to the Graph Explorer with the graph list pane highlighted in red:
+
+#### Graph Explorer
 
 ![Graph Explorer](screenshots/graph-list-pane.png)
 
