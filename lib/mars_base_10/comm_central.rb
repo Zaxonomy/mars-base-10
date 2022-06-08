@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 require 'urbit'
 
-require_relative  'graph_rover'
-require_relative  'group_room'
+require_relative  'controller'
 require_relative  'viewport'
 
 module MarsBase10
@@ -14,7 +13,7 @@ module MarsBase10
       @ship = Urbit.connect(config_file: config_filename)
       @ship.login
       sleep 2  # This is temporary for now, we need a way to know that the subscription callbacks have finished.
-      @controller = GroupRoom.new manager: self, ship_connection: @ship, viewport: @viewport
+      @controller = Controller::GroupRoom.new manager: self, ship_connection: @ship, viewport: @viewport
     end
 
     def activate
@@ -23,10 +22,10 @@ module MarsBase10
 
     def swap_controller
       self.controller.stop
-      if GroupRoom == self.controller.class
-        @controller = GraphRover.new manager: self, ship_connection: self.ship, viewport: @viewport
+      if Controller::GroupRoom == self.controller.class
+        @controller = Controller::GraphRover.new manager: self, ship_connection: self.ship, viewport: @viewport
       else
-        @controller = GroupRoom.new  manager: self, ship_connection: self.ship, viewport: @viewport
+        @controller = Controller::GroupRoom.new  manager: self, ship_connection: self.ship, viewport: @viewport
       end
       self.controller.start
     end
