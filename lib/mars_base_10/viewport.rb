@@ -70,15 +70,6 @@ module MarsBase10
       @active_pane = p
     end
 
-    def add_variable_width_pane(at_row: self.min_row, at_col: self.min_col, height_pct:)
-      p = VariableWidthPane.new viewport: self,
-                                  at_row: at_row,
-                                  at_col: at_col,
-                              height_pct: height_pct
-      @panes << p
-      p
-    end
-
     #
     # Adds a new variable width drawable area (VariableBothPane) to the
     #   right-hand side of the viewport.
@@ -91,6 +82,24 @@ module MarsBase10
       p = VariableBothPane.new viewport: self,
                                  at_row: at_row,
                                  at_col: at_col
+      @panes << p
+      p
+    end
+
+    def add_variable_height_pane(at_row:, width_pct:)
+      p = VariableHeightPane.new viewport: self,
+                                  at_row: at_row,
+                                  at_col: self.min_col,
+                               width_pct: width_pct
+      @panes << p
+      p
+    end
+
+    def add_variable_width_pane(at_row: self.min_row, at_col: self.min_col, height_pct:)
+      p = VariableWidthPane.new viewport: self,
+                                  at_row: at_row,
+                                  at_col: at_col,
+                              height_pct: height_pct
       @panes << p
       p
     end

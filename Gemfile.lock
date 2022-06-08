@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mars_base_10 (0.4.0)
+    mars_base_10 (0.5.0)
       curses (~> 1.4)
       pastel (~> 0.8)
       sorted_set (~> 1.0)
@@ -57,7 +57,7 @@ GEM
     rainbow (3.1.1)
     rake (13.0.6)
     rbtree (0.4.5)
-    regexp_parser (2.3.1)
+    regexp_parser (2.4.0)
     rexml (3.2.5)
     rspec (3.11.0)
       rspec-core (~> 3.11.0)
@@ -72,12 +72,12 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-support (3.11.0)
-    rubocop (1.28.2)
+    rubocop (1.29.0)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
-      rexml
+      rexml (>= 3.2.5, < 4.0)
       rubocop-ast (>= 1.17.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
