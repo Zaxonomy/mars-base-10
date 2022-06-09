@@ -7,7 +7,7 @@ require_relative  'viewport'
 module MarsBase10
   class Error < StandardError; end
 
-  class CommCentral
+  class MissionControl
     def initialize(config_filename:)
       @viewport = Viewport.new
       @ship = Urbit.connect(config_file: config_filename)

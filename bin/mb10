@@ -2,10 +2,10 @@
 # frozen_string_literal: true
 
 # require "bundler/setup"
-# require "mars_base_10/comm_central"
+# require "mars_base_10/mission_control"
 
 # begin
-#   cc = MarsBase10::CommCentral.new
+#   cc = MarsBase10::MissionControl.new
 #   cc.activate
 # ensure
 #   cc.shutdown

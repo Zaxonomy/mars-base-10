@@ -39,9 +39,9 @@ module MarsBase10
         invoke :help, ["launch"]
       else
         if (config)
-          require_relative "comm_central"
+          require_relative "mission_control"
           begin
-            cc = MarsBase10::CommCentral.new config_filename: config
+            cc = MarsBase10::MissionControl.new config_filename: config
             cc.activate
           ensure
             cc.shutdown
