@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
+require_relative '../controller'
+
 module MarsBase10
-  module Controller
-    class GraphRover
+    class GraphRover < Controller
       attr_reader :manager, :panes, :ship, :viewport
 
       def initialize(manager:, ship_connection:, viewport:)
@@ -132,5 +133,4 @@ module MarsBase10
         @node_view_pane.view(subject: @ship.empty_node)
       end
     end
-  end # Module Controller
 end   # Module Mars::Base::10

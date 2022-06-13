@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
+require_relative '../controller'
+
 module MarsBase10
-  module Controller
-    class GroupRoom
+    class GroupRoom < Controller
       attr_reader :manager, :panes, :ship, :viewport
 
       def initialize(manager:, ship_connection:, viewport:)
@@ -59,13 +60,13 @@ module MarsBase10
         self.resync if resync_needed
       end
 
-      def start
-        self.viewport.open
-      end
+      # def start
+      #   self.viewport.open
+      # end
 
-      def stop
-        self.viewport.close
-      end
+      # def stop
+      #   self.viewport.close
+      # end
 
       private
 
@@ -122,5 +123,4 @@ module MarsBase10
         @pane_4.highlight = false
       end
     end
-  end # Module Controller
 end   # Module Mars::Base::10
