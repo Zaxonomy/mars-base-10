@@ -14,7 +14,7 @@ module MarsBase10
         @viewport.controller = self
 
         self.wire_up_panes
-        self.viewport.action_bar = ActionBar.Default.add_action({'i': 'Inspect'})
+        self.action_bar = ActionBar.Default.add_action({'i': 'Inspect'})
         self.viewport.activate pane: @pane_1
         self.resync
       end
@@ -51,7 +51,8 @@ module MarsBase10
         when 'i'    # (I)nspect
           begin
             self.viewport.activate pane: @pane_3
-            self.viewport.action_bar = ActionBar.Default.add_action({'g': 'Group List'})
+            self.action_bar = ActionBar.Default.add_action({'g': 'Group List'})
+            self.action_bar = ActionBar.Default.add_action({'r': 'Read Channel'})
             resync_needed = false
           end
         when 'X'
@@ -59,14 +60,6 @@ module MarsBase10
         end
         self.resync if resync_needed
       end
-
-      # def start
-      #   self.viewport.open
-      # end
-
-      # def stop
-      #   self.viewport.close
-      # end
 
       private
 

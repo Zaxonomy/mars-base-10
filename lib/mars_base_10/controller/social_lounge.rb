@@ -15,7 +15,7 @@ module MarsBase10
         @viewport.controller = self
 
         self.wire_up_panes
-        self.viewport.action_bar = ActionBar.Default.add_action({'i': 'Inspect'})
+        self.action_bar = ActionBar.Default.add_action({'i': 'Inspect'})
         self.viewport.activate pane: @pane_1
       end
 
@@ -50,7 +50,7 @@ module MarsBase10
         when 'i'    # (I)nspect
           begin
             self.viewport.activate pane: @pane_3
-            self.viewport.action_bar = ActionBar.Default.add_action({'g': 'Group List'})
+            self.action_bar = ActionBar.Default.add_action({'g': 'Group List'})
           end
         when 'X'
           self.manager.swap_controller
