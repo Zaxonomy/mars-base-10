@@ -19,26 +19,28 @@ module MarsBase10
       # Called by a pane in this controller for bubbling a key press up
       #
       def send(key:)
-        resync_needed = false
+        resync_needed = true
         case key
-        when 'g'    # (g)raph View
+        when 'g'    # (G)raph View
           unless @pane_1.active?
             self.action_bar.remove_actions([:r])
             self.viewport.activate pane: @pane_1
-            resync_needed = true
           end
-        when 'i'    # (i)nspect
+        when 'i'    # (I)nspect
           begin
+            resync_needed = false
             self.action_bar.add_action({'g': 'Group List'})
             self.action_bar.add_action({'r': 'Read Channel'})
             self.viewport.activate pane: @pane_3
           end
         when 'r'    # (r)ead -> go to the Social Lounge
           if @pane_3.active?
+            resync_needed = false
             self.action_bar.remove_actions([:g, :r])
             self.manager.assign(controller_class: SocialLounge)
           end
         when 'X'
+          resync_needed = false
           self.manager.swap_controller
         end
         self.resync if resync_needed

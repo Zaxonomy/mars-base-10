@@ -18,7 +18,7 @@ module MarsBase10
       self.wire_up_panes
       self.action_bar = ActionBar.Default.add_action({'i': 'Inspect'})
       self.viewport.activate pane: @pane_1
-      self.resync
+      self.show
     end
 
     def action_bar
@@ -33,7 +33,8 @@ module MarsBase10
       @pane_1.current_subject_index
     end
 
-    def resync
+    def show
+      self.resync
     end
 
     def start

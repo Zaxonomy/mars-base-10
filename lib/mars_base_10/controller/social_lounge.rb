@@ -4,8 +4,21 @@ require_relative '../controller'
 
 module MarsBase10
   class SocialLounge < Controller
+    def active_resource
+      '~winter-paches/top-shelf-6391'
+    end
+
     def active_subject(pane:)
       pane.current_subject_index
+    end
+
+    def fetch_channel_messages
+      if @pane_1 == self.viewport.active_pane
+        @pane_1.clear
+        @pane_1.subject.title = "Nodes of #{self.active_resource}"
+        @pane_1.subject.contents = self.ship.fetch_node_list(resource: self.active_resource)
+      end
+      nil
     end
 
     def load_history
@@ -35,13 +48,17 @@ module MarsBase10
       end
     end
 
+    def show
+      self.fetch_channel_messages
+    end
+
     private
 
     def wire_up_panes
       @panes = []
       # Pane #1 is the Chat Channel Reader. It takes up the entire Viewport. (For now?)
-      @pane_1 = @viewport.add_pane height_pct: 1.0, width_pct: 1.0
-      @pane_1.view(subject: @ship.group_names)
+      @pane_1 = self.viewport.add_pane height_pct: 1.0, width_pct: 1.0
+      @pane_1.view(subject: self.ship.empty_node_list)
     end
   end
 end   # Module Mars::Base::10
