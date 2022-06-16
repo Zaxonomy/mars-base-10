@@ -9,9 +9,9 @@ module MarsBase10
     end
 
     def load_history
-      return 0 unless @pane_3 == self.viewport.active_pane
+      return 0 unless @pane_1 == self.viewport.active_pane
       new_content = self.ship.fetch_older_nodes(resource: self.active_resource, node: self.active_node)
-      @pane_3.subject.prepend_content(ary: new_content)
+      @pane_1.subject.prepend_content(ary: new_content)
       new_content.length
     end
 

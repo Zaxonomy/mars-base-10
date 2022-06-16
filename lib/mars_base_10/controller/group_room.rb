@@ -19,19 +19,24 @@ module MarsBase10
       # Called by a pane in this controller for bubbling a key press up
       #
       def send(key:)
-        resync_needed = true
+        resync_needed = false
         case key
-        when 'g'    # (G)raph View
+        when 'g'    # (g)raph View
           unless @pane_1.active?
             self.action_bar.remove_actions([:r])
             self.viewport.activate pane: @pane_1
+            resync_needed = true
           end
-        when 'i'    # (I)nspect
+        when 'i'    # (i)nspect
           begin
             self.action_bar.add_action({'g': 'Group List'})
             self.action_bar.add_action({'r': 'Read Channel'})
             self.viewport.activate pane: @pane_3
-            resync_needed = false
+          end
+        when 'r'    # (r)ead -> go to the Social Lounge
+          if @pane_3.active?
+            self.action_bar.remove_actions([:g, :r])
+            self.manager.assign(controller_class: SocialLounge)
           end
         when 'X'
           self.manager.swap_controller
@@ -84,7 +89,7 @@ module MarsBase10
         @pane_2.view(subject: @ship.empty_node)
         @pane_2.highlight = false
 
-        # The node list is a variable width, fixed height pane in the upper right.
+        # Pane 3 is the Channel list. It is a variable width, fixed height pane in the upper right.
         @pane_3 = @viewport.add_variable_width_pane at_col: @pane_1.last_col, height_pct: 0.5
         @pane_3.view(subject: @ship.empty_node_list)
 

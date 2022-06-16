@@ -22,18 +22,24 @@ module MarsBase10
       self.controller.start
     end
 
-    def swap_controller
-      if GroupRoom == self.controller.class
-        @controller = GraphRover.new   manager: self, ship_connection: self.ship, viewport: @viewport
-      elsif GraphRover == self.controller.class
-        @controller = SocialLounge.new manager: self, ship_connection: self.ship, viewport: @viewport
-      else
-        @controller = GroupRoom.new    manager: self, ship_connection: self.ship, viewport: @viewport
-      end
+    def assign(controller_class:)
+      c = controller_class.send(:new, {manager: self, ship_connection: self.ship, viewport: @viewport})
+      @controller = c
     end
 
     def shutdown
       self.controller.stop
+    end
+
+    def swap_controller
+      if GroupRoom == self.controller.class
+        cls = GraphRover
+      elsif GraphRover == self.controller.class
+        cls = SocialLounge
+      else
+        cls = GroupRoom
+      end
+      self.assign(controller_class: cls)
     end
 
     private
