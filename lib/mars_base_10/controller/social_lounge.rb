@@ -23,11 +23,12 @@ module MarsBase10
       when 'g'    # (G)raph View
         unless @pane_1.active?
           self.viewport.activate pane: @pane_1
+          self.action_bar.remove_actions([:g])
         end
       when 'i'    # (I)nspect
         begin
           self.viewport.activate pane: @pane_3
-          self.action_bar = ActionBar.Default.add_action({'g': 'Group List'})
+          self.action_bar.add_action({'g': 'Group List'})
         end
       when 'X'
         self.manager.swap_controller

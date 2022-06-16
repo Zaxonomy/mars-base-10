@@ -23,13 +23,14 @@ module MarsBase10
         case key
         when 'g'    # (G)raph View
           unless @pane_1.active?
+            self.action_bar.remove_actions([:r])
             self.viewport.activate pane: @pane_1
           end
         when 'i'    # (I)nspect
           begin
+            self.action_bar.add_action({'g': 'Group List'})
+            self.action_bar.add_action({'r': 'Read Channel'})
             self.viewport.activate pane: @pane_3
-            self.action_bar = ActionBar.Default.add_action({'g': 'Group List'})
-            self.action_bar = ActionBar.Default.add_action({'r': 'Read Channel'})
             resync_needed = false
           end
         when 'X'

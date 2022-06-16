@@ -25,6 +25,7 @@ module MarsBase10
         begin
           if @node_view_pane.subject.contents[4].include?('true')
             self.action_bar.add_action({'p': 'Pop Out'})
+            self.action_bar.remove_actions([:d, :g])
             @stack.push(self.active_resource)
             @node_list_pane.clear
             @node_list_pane.subject.contents = self.ship.fetch_node_children(resource: self.active_resource, index: self.active_node_index)
@@ -33,7 +34,7 @@ module MarsBase10
       when 'i'    # (I)nspect
         begin
           self.viewport.activate pane: @node_list_pane
-          self.action_bar = ActionBar.Default.add_action({'d': 'Dive In', 'g': 'Graph List'})
+          self.action_bar.add_action({'d': 'Dive In', 'g': 'Graph List'})
           resync_needed = false
         end
       when 'g'    # (G)raph View
@@ -48,7 +49,7 @@ module MarsBase10
             @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: resource)
           end
           if (@stack.length == 0)
-            self.action_bar.remove_action(:p)
+            self.action_bar.remove_actions([:p])
           end
         end
       when 'X'

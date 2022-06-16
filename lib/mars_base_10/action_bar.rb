@@ -60,8 +60,8 @@ module MarsBase10
       1
     end
 
-    def remove_action(key)
-      self.actions.delete_if {|k, v| k == key}
+    def remove_actions(keys)
+      self.actions.delete_if {|k, v| keys.include? k}
       self
     end
 

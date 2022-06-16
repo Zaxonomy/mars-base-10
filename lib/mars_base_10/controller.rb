@@ -21,13 +21,8 @@ module MarsBase10
       self.resync
     end
 
-
     def action_bar
       self.viewport.action_bar
-    end
-
-    def action_bar=(an_action_bar)
-      self.viewport.action_bar = an_action_bar
     end
 
     def active_node
@@ -47,6 +42,12 @@ module MarsBase10
 
     def stop
       self.viewport.close
+    end
+
+    private
+
+    def action_bar=(an_action_bar)
+      self.viewport.action_bar = an_action_bar
     end
   end
 end
