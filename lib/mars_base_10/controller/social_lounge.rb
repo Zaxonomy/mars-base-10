@@ -4,8 +4,17 @@ require_relative '../controller'
 
 module MarsBase10
   class SocialLounge < Controller
+    attr_accessor :channel
+
+    def active_channel
+      if self.channel.nil?
+        self.channel = self.ship.fetch_channel(group_title: 'The Great North', channel_title: 'Top Shelf')
+      end
+      self.channel
+    end
+
     def active_resource
-      '~winter-paches/top-shelf-6391'
+      self.active_channel.resource # '~winter-paches/top-shelf-6391'
     end
 
     def active_subject(pane:)
@@ -15,7 +24,7 @@ module MarsBase10
     def fetch_channel_messages
       if @pane_1 == self.viewport.active_pane
         @pane_1.clear
-        @pane_1.subject.title = "Nodes of #{self.active_resource}"
+        @pane_1.subject.title = "Messages in #{self.active_channel.title}"
         @pane_1.subject.contents = self.ship.fetch_node_list(resource: self.active_resource)
       end
       nil

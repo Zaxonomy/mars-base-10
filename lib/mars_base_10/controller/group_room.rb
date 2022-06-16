@@ -71,7 +71,7 @@ module MarsBase10
         channel_title = self.active_subject(pane: @pane_3)
         @pane_4.subject.title = "#{channel_title}"
         @pane_4.clear
-        @pane_4.subject.contents = self.ship.fetch_channel(group_title: self.active_subject(pane: @pane_1), channel_title: channel_title)
+        @pane_4.subject.contents = self.ship.fetch_channel_props(group_title: self.active_subject(pane: @pane_1), channel_title: channel_title)
         nil
       end
 
