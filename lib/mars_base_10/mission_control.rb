@@ -24,11 +24,11 @@ module MarsBase10
 
     def swap_controller
       if GroupRoom == self.controller.class
-        @controller = GraphRover.new manager: self, ship_connection: self.ship, viewport: @viewport
+        @controller = GraphRover.new   manager: self, ship_connection: self.ship, viewport: @viewport
       elsif GraphRover == self.controller.class
         @controller = SocialLounge.new manager: self, ship_connection: self.ship, viewport: @viewport
       else
-        @controller = GroupRoom.new  manager: self, ship_connection: self.ship, viewport: @viewport
+        @controller = GroupRoom.new    manager: self, ship_connection: self.ship, viewport: @viewport
       end
     end
 

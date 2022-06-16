@@ -4,21 +4,6 @@ require_relative '../controller'
 
 module MarsBase10
     class GroupRoom < Controller
-      attr_reader :manager, :panes, :ship, :viewport
-
-      def initialize(manager:, ship_connection:, viewport:)
-        @manager = manager
-        @ship = Ship.new connection: ship_connection
-        @stack = Stack.new
-        @viewport = viewport
-        @viewport.controller = self
-
-        self.wire_up_panes
-        self.action_bar = ActionBar.Default.add_action({'i': 'Inspect'})
-        self.viewport.activate pane: @pane_1
-        self.resync
-      end
-
       def active_node
         self.ship.fetch_node(resource: self.active_resource, index: self.active_node_index)
       end
