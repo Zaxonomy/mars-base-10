@@ -8,14 +8,6 @@ module MarsBase10
       @node_list_pane.current_subject_index
     end
 
-    def active_node
-      self.ship.fetch_node(resource: self.active_resource, index: self.active_node_index)
-    end
-
-    def active_resource
-      @pane_1.current_subject_index
-    end
-
     def load_history
       return 0 unless @node_list_pane == self.viewport.active_pane
       new_content = self.ship.fetch_older_nodes(resource: self.active_resource, node: self.active_node)

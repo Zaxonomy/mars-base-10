@@ -30,6 +30,14 @@ module MarsBase10
       self.viewport.action_bar = an_action_bar
     end
 
+    def active_node
+      self.ship.fetch_node(resource: self.active_resource, index: self.active_node_index)
+    end
+
+    def active_resource
+      @pane_1.current_subject_index
+    end
+
     def resync
     end
 

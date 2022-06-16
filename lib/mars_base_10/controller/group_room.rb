@@ -4,14 +4,6 @@ require_relative '../controller'
 
 module MarsBase10
     class GroupRoom < Controller
-      def active_node
-        self.ship.fetch_node(resource: self.active_resource, index: self.active_node_index)
-      end
-
-      def active_resource
-        @pane_1.current_subject_index
-      end
-
       def active_subject(pane:)
         pane.current_subject_index
       end
