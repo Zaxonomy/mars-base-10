@@ -10,11 +10,14 @@ module MarsBase10
   class Error < StandardError; end
 
   class MissionControl
+    attr_accessor :controller
+    attr_reader   :ship
+
     def initialize(config_filename:)
-      @viewport = Viewport.new
       @ship = Urbit.connect(config_file: config_filename)
       @ship.login
       sleep 2  # This is temporary for now, we need a way to know that the subscription callbacks have finished.
+      @viewport = Viewport.new
       @controller = GroupRoom.new manager: self, ship_connection: @ship, viewport: @viewport
     end
 
@@ -23,8 +26,8 @@ module MarsBase10
     end
 
     def assign(controller_class:)
-      c = controller_class.send(:new, {manager: self, ship_connection: self.ship, viewport: @viewport})
-      @controller = c
+      @viewport.dispose_panes
+      self.controller = controller_class.send(:new, {manager: self, ship_connection: self.ship, viewport: @viewport})
     end
 
     def shutdown
@@ -40,16 +43,6 @@ module MarsBase10
         cls = GroupRoom
       end
       self.assign(controller_class: cls)
-    end
-
-    private
-
-    def controller
-      @controller
-    end
-
-    def ship
-      @ship
     end
   end
 end
