@@ -78,12 +78,12 @@ module MarsBase10
       n.to_pretty_array
     end
 
-    def fetch_node_list(resource:)
-      @ship.graph(resource: resource).newest_nodes(count: 60).map {|node| node.index}.sort
+    def fetch_node_list(resource:, count: 60)
+      @ship.graph(resource: resource).newest_nodes(count: count).map {|node| node.index}.sort
     end
 
-    def fetch_older_nodes(resource:, node:)
-      @ship.graph(resource: resource).older_sibling_nodes(node: node, count: 60).map {|node| node.index}.sort
+    def fetch_older_nodes(resource:, node:, count: 60)
+      @ship.graph(resource: resource).older_sibling_nodes(node: node, count: count).map {|node| node.index}.sort
     end
   end
 end

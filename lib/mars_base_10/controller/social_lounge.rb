@@ -25,7 +25,7 @@ module MarsBase10
       if @pane_1 == self.viewport.active_pane
         @pane_1.clear
         @pane_1.subject.title = "Messages in #{self.active_channel.title}"
-        @pane_1.subject.contents = self.ship.fetch_node_list(resource: self.active_resource)
+        @pane_1.subject.contents = self.nodes_to_messages
       end
       nil
     end
@@ -35,6 +35,18 @@ module MarsBase10
       new_content = self.ship.fetch_older_nodes(resource: self.active_resource, node: self.active_node)
       @pane_1.subject.prepend_content(ary: new_content)
       new_content.length
+    end
+
+    def message(node:)
+      "~#{node.to_h[:author]}  #{node.to_h[:contents][0]["text"]}"
+    end
+
+    def nodes_to_messages
+      indexes = self.ship.fetch_node_list(resource: self.active_resource, count: @pane_1.last_visible_row)
+      messages = indexes.map do |i|
+        # Can't use fetch_node_contents because we're formatting differently now.
+        self.message(node: self.ship.fetch_node(resource: self.active_resource, index: i))
+      end
     end
 
     #
