@@ -45,6 +45,7 @@ module MarsBase10
 
       first_draw_row = self.first_row
       last_draw_row  = self.last_drawable_row
+      item_index = 0
 
       (first_draw_row..last_draw_row).each do |index|
         self.draw_line
@@ -61,12 +62,18 @@ module MarsBase10
           end
           self.draw_row -= 1
         else
-          self.window.addstr("#{self.subject.line_at(index: item_index)}")
+          # self.window.addstr("#{self.subject.line_at(index: item_index)}")
+          self.window.addstr("#{item_index} #{last_drawable_row} #{self.subject.line_at(index: item_index)}")
         end
 
         self.window.attroff(Curses::A_REVERSE) if (item_index == self.index) && self.highlight
         self.window.clrtoeol
         self.draw_row += 1
+      end
+
+      # Adjust our frame if we have wrapped rows.
+      if item_index < last_drawable_row
+        @visible_content_shift -= (last_draw_row - item_index)
       end
 
       self.draw_border
@@ -104,7 +111,8 @@ module MarsBase10
     # This is the _relative_ last column, e.g. the width of the pane in columns.
     #
     def last_col
-      [(self.viewport.max_cols * self.width_pct).floor, self.min_column_width].max
+      # [(self.viewport.max_cols * self.width_pct).floor, self.min_column_width].max
+      (self.viewport.max_cols * self.width_pct).floor
     end
 
     def last_drawable_row
