@@ -34,31 +34,29 @@ module MarsBase10
       if @pane_1 == self.viewport.active_pane
         @pane_1.clear
         @pane_1.subject.title = "Messages in #{self.active_channel.title}"
-        @pane_1.subject.contents = self.nodes_to_messages(count: @pane_1.last_visible_row)
+        @pane_1.subject.contents = self.load_messages(count: @pane_1.last_visible_row)
       end
       nil
     end
 
     def load_history
       return 0 unless @pane_1 == self.viewport.active_pane
-      new_content_indexes = self.ship.fetch_older_nodes(resource: self.active_resource, node: self.active_node, count: @pane_1.last_visible_row)
-      @index_ary =  new_content_indexes + @index_ary
-      messages = new_content_indexes.map do |i|
-        # Can't use fetch_node_contents because we're formatting differently now.
-        self.message(node: self.ship.fetch_node(resource: self.active_resource, index: i))
-      end
+      messages = self.node_indexes_to_messages(node_indexes: self.ship.fetch_older_nodes(resource: self.active_resource, node: self.active_node, count: @pane_1.last_visible_row))
       @pane_1.subject.prepend_content(ary: messages)
-      new_content_indexes.length
+      messages.length
+    end
+
+    def load_messages(count:)
+      self.node_indexes_to_messages(node_indexes: self.ship.fetch_node_list(resource: self.active_resource, count: count))
     end
 
     def message(node:)
       "~#{node.to_h[:author]}  #{node.to_h[:contents][0]["text"]}"
     end
 
-    def nodes_to_messages(count:)
-      node_indexes = self.ship.fetch_node_list(resource: self.active_resource, count: count)
+    def node_indexes_to_messages(node_indexes:)
+      @index_ary =  node_indexes + @index_ary
       messages = node_indexes.map do |i|
-        @index_ary << i
         # Can't use fetch_node_contents because we're formatting differently now.
         self.message(node: self.ship.fetch_node(resource: self.active_resource, index: i))
       end
