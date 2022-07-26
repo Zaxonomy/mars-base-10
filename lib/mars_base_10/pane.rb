@@ -67,8 +67,8 @@ module MarsBase10
             self.extended_lines -= 1
           else
             self.draw_line
-            self.window.addstr("#{self.subject.line_at(index: self.current_item_index)}")
-            # self.window.addstr("#{@first_visible_index} #{@last_visible_index} #{self.subject.line_at(index: self.current_item_index)}")
+            # self.window.addstr("#{self.subject.line_at(index: self.current_item_index)}")
+            self.window.addstr("#{self.visible_content_range} #{self.subject.line_at(index: self.current_item_index)}")
             self.cur_draw_row += 1
           end
 
@@ -182,7 +182,7 @@ module MarsBase10
       when 'J'
         self.index = self.set_row([self.index + (self.last_visible_row), self.max_contents_rows].min)
       when 'K'
-        self.index = self.set_row(self.index - (self.last_visible_row))
+        self.index = self.set_row(self.index - self.visible_content_range.count)
       when 'q'
         exit 0
       when ('0'..'9')
@@ -219,7 +219,6 @@ module MarsBase10
       jump = [(index - self.index), (self.max_contents_rows - self.visible_content_range.last)].min
       if index > self.index
         # Scrolling down
-        # @visible_content_shift = [(index - @last_visible_index), 0].max
         if index > self.visible_content_range.last
           @first_visible_index = @first_visible_index + jump
           @last_visible_index = @last_visible_index + jump
@@ -230,7 +229,6 @@ module MarsBase10
             @first_visible_index = [(@first_visible_index + jump), 1].max
             @last_visible_index = @last_visible_index + jump
         end
-      #   @visible_content_shift = [(index - self.first_drawable_row), 0].max
       end
       [index, 1].max
     end
@@ -247,7 +245,12 @@ module MarsBase10
 
       # Check if we have tried to move "above" the visible screen limit (i = 1) and retrieve more items, if possible.
       if (i < 1)
+        if i < 0
+          target_index = self.index
+          self.index = 1
+        end
         i = [self.viewport.controller.load_history, 1].max
+        i = target_index if target_index
       end
 
       return self.scroll_to_row(i)
