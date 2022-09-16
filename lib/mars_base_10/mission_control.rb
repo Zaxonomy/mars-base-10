@@ -25,9 +25,9 @@ module MarsBase10
       self.controller.start
     end
 
-    def assign(controller_class:)
+    def assign(controller_class:, options: {})
       @viewport.dispose_panes
-      self.controller = controller_class.send(:new, {manager: self, ship_connection: self.ship, viewport: @viewport})
+      self.controller = controller_class.send(:new, {manager: self, ship_connection: self.ship, viewport: @viewport, options: options})
     end
 
     def shutdown

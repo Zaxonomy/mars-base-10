@@ -6,14 +6,16 @@ module MarsBase10
   class SocialLounge < Controller
     attr_accessor :channel
 
-    def initialize(manager:, ship_connection:, viewport:)
+    def initialize(manager:, ship_connection:, viewport:, options: {})
       @index_ary = []
+      @group_title = options[:group_title]
+      @channel_title = options[:channel_title]
       super(manager: manager, ship_connection: ship_connection, viewport: viewport)
     end
 
     def active_channel
       if self.channel.nil?
-        self.channel = self.ship.fetch_channel(group_title: 'The Great North', channel_title: 'Top Shelf')
+        self.channel = self.ship.fetch_channel(group_title: @group_title, channel_title: @channel_title)
       end
       self.channel
     end
@@ -50,14 +52,28 @@ module MarsBase10
       self.node_indexes_to_messages(node_indexes: self.ship.fetch_node_list(resource: self.active_resource, count: count))
     end
 
+    # This will eventually be a native part of the Airlock API
     def message(node:)
-      "~#{node.to_h[:author]}  #{node.to_h[:contents][0]["text"]}"
+      "~#{node.to_h[:author]}  #{self.message_content(node_content: node.to_h[:contents])}"
+    end
+
+    def message_content(node_content:)
+      n0 = node_content[0]
+      if n0["reference"]
+        # http://localhost:8080/apps/landscape/perma/group/~winter-paches/the-great-north/graph/~winter-paches/top-shelf-6391/170141184505732100235824355185168220160
+        ref = n0["reference"]["graph"]
+        # grup = ref["group"].split('/').last
+        # graf = ref["graph"].split('/').last
+        return "=> #{node_content[2]["mention"]} -> #{node_content[3]["text"]} (#{ref["index"]})"
+      end
+      n0["text"] || n0["url"]
     end
 
     def node_indexes_to_messages(node_indexes:)
       @index_ary =  node_indexes + @index_ary
       messages = node_indexes.map do |i|
         # Can't use fetch_node_contents because we're formatting differently now.
+        # This will eventually be a native part of the Airlock API
         self.message(node: self.ship.fetch_node(resource: self.active_resource, index: i))
       end
     end

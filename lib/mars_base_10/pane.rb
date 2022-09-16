@@ -67,8 +67,7 @@ module MarsBase10
             self.extended_lines -= 1
           else
             self.draw_line
-            # self.window.addstr("#{self.subject.line_at(index: self.current_item_index)}")
-            self.window.addstr("#{self.visible_content_range} #{self.subject.line_at(index: self.current_item_index)}")
+            self.window.addstr("#{self.subject.line_at(index: self.current_item_index)}")
             self.cur_draw_row += 1
           end
 

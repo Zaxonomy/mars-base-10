@@ -8,7 +8,7 @@ module MarsBase10
   class Controller
     attr_reader :manager, :panes, :ship, :viewport
 
-    def initialize(manager:, ship_connection:, viewport:)
+    def initialize(manager:, ship_connection:, viewport:, options: {})
       @manager = manager
       @ship = Ship.new connection: ship_connection
       @stack = Stack.new

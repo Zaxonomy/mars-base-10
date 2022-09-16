@@ -37,7 +37,11 @@ module MarsBase10
           if @pane_3.active?
             resync_needed = false
             self.action_bar.remove_actions([:g, :r])
-            self.manager.assign(controller_class: SocialLounge)
+            opts = {
+              group_title:   self.active_subject(pane: @pane_1),
+              channel_title: self.active_subject(pane: @pane_3)
+            }
+            self.manager.assign(controller_class: SocialLounge, options: opts)
           end
         when 'X'
           resync_needed = false
