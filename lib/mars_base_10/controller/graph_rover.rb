@@ -1,36 +1,11 @@
 # frozen_string_literal: true
 
-require_relative 'ship'
-require_relative 'stack'
-require_relative 'subject'
+require_relative '../controller'
 
 module MarsBase10
-  class GraphRover
-    attr_reader :manager, :panes, :ship, :viewport
-
-    def initialize(manager:, ship_connection:, viewport:)
-      @manager = manager
-      @ship = Ship.new connection: ship_connection
-      @stack = Stack.new
-      @viewport = viewport
-      @viewport.controller = self
-
-      self.wire_up_panes
-      self.viewport.action_bar = ActionBar.Default.add_action({'i': 'Inspect'})
-      self.viewport.activate pane: @graph_list_pane
-      self.resync
-    end
-
+  class GraphRover < Controller
     def active_node_index
       @node_list_pane.current_subject_index
-    end
-
-    def active_node
-      self.ship.fetch_node(resource: self.active_resource, index: self.active_node_index)
-    end
-
-    def active_resource
-      @graph_list_pane.current_subject_index
     end
 
     def load_history
@@ -49,7 +24,8 @@ module MarsBase10
       when 'd'    # (D)ive
         begin
           if @node_view_pane.subject.contents[4].include?('true')
-            self.viewport.action_bar.add_action({'p': 'Pop Out'})
+            self.action_bar.add_action({'p': 'Pop Out'})
+            self.action_bar.remove_actions([:d, :g])
             @stack.push(self.active_resource)
             @node_list_pane.clear
             @node_list_pane.subject.contents = self.ship.fetch_node_children(resource: self.active_resource, index: self.active_node_index)
@@ -58,12 +34,12 @@ module MarsBase10
       when 'i'    # (I)nspect
         begin
           self.viewport.activate pane: @node_list_pane
-          self.viewport.action_bar = ActionBar.Default.add_action({'d': 'Dive In', 'g': 'Graph List'})
+          self.action_bar.add_action({'d': 'Dive In', 'g': 'Graph List'})
           resync_needed = false
         end
       when 'g'    # (G)raph View
-        unless @graph_list_pane.active?
-          self.viewport.activate pane: @graph_list_pane
+        unless @pane_1.active?
+          self.viewport.activate pane: @pane_1
           # resync_needed = false
         end
       when 'p'    # (P)op
@@ -73,7 +49,7 @@ module MarsBase10
             @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: resource)
           end
           if (@stack.length == 0)
-            self.viewport.action_bar.remove_action(:p)
+            self.action_bar.remove_actions([:p])
           end
         end
       when 'X'
@@ -98,7 +74,7 @@ module MarsBase10
     end
 
     def resync_node_list
-      if @graph_list_pane == self.viewport.active_pane
+      if @pane_1 == self.viewport.active_pane
         @node_list_pane.clear
         @node_list_pane.subject.title = "Nodes of #{self.active_resource}"
         @node_list_pane.subject.contents = self.ship.fetch_node_list(resource: self.active_resource)
@@ -123,16 +99,16 @@ module MarsBase10
       @panes = []
 
       # The graph list is a fixed width, variable height (full screen) pane on the left.
-      @graph_list_pane = @viewport.add_pane width_pct: 0.3
-      @graph_list_pane.view(subject: @ship.graph_names)
+      @pane_1 = @viewport.add_pane width_pct: 0.3
+      @pane_1.view(subject: @ship.graph_names)
 
       # The node list is a variable width, fixed height pane in the upper right.
-      @node_list_pane = @viewport.add_variable_width_pane at_col: @graph_list_pane.last_col, height_pct: 0.5
+      @node_list_pane = @viewport.add_variable_width_pane at_col: @pane_1.last_col, height_pct: 0.5
       @node_list_pane.view(subject: @ship.empty_node_list)
 
       # The single node viewer is a variable width, variable height pane in the lower right.
-      @node_view_pane = @viewport.add_variable_both_pane at_row: @node_list_pane.last_row, at_col: @graph_list_pane.last_col
+      @node_view_pane = @viewport.add_variable_both_pane at_row: @node_list_pane.last_row, at_col: @pane_1.last_col
       @node_view_pane.view(subject: @ship.empty_node)
     end
   end
-end
+end   # Module Mars::Base::10

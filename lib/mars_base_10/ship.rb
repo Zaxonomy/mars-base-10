@@ -27,20 +27,27 @@ module MarsBase10
     def fetch_channel(group_title:, channel_title:)
       if (group = @ship.groups[title: group_title])
         if (channel = group.graphs.select {|c| channel_title == c.title unless c.nil?}.first)
-          # What we are calling a channel here is really a graph in the urbit-ruby bridge.
-          # This is the equivalent of node.to_pretty_array
-          props = {
-            title:       channel.title,
-            description: channel.description,
-            creator:     channel.creator,
-            host_ship:   channel.host_ship,
-            resource:    channel.resource,
-            type:        channel.type
-          }
-          return props.each.map {|k, v| "#{k}#{(' ' * [(18 - k.length), 0].max)}#{v}"}
+          return channel
         end
       end
-      ["Group not found."]
+      nil
+    end
+
+    def fetch_channel_props(group_title:, channel_title:)
+      if (channel = self.fetch_channel(group_title: group_title, channel_title: channel_title))
+        # What we are calling a channel here is really a graph in the urbit-ruby bridge.
+        # This is the equivalent of node.to_pretty_array
+        props = {
+          title:       channel.title,
+          description: channel.description,
+          creator:     channel.creator,
+          host_ship:   channel.host_ship,
+          resource:    channel.resource,
+          type:        channel.type
+        }
+        return props.each.map {|k, v| "#{k}#{(' ' * [(18 - k.length), 0].max)}#{v}"}
+      end
+      ["Channel not found."]
     end
 
     def fetch_group(group_title:)
@@ -71,12 +78,12 @@ module MarsBase10
       n.to_pretty_array
     end
 
-    def fetch_node_list(resource:)
-      @ship.graph(resource: resource).newest_nodes(count: 60).map {|node| node.index}.sort
+    def fetch_node_list(resource:, count: 60)
+      @ship.graph(resource: resource).newest_nodes(count: count).map {|node| node.index}.sort
     end
 
-    def fetch_older_nodes(resource:, node:)
-      @ship.graph(resource: resource).older_sibling_nodes(node: node, count: 60).map {|node| node.index}.sort
+    def fetch_older_nodes(resource:, node:, count: 60)
+      @ship.graph(resource: resource).older_sibling_nodes(node: node, count: count).map {|node| node.index}.sort
     end
   end
 end

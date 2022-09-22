@@ -48,13 +48,20 @@ Properties of the group are displayed below in the Group details pane.
 
 From here you can choose a group by moving up (k) and down (j) using vim-style motion or jump immediately by typing the row number (04).
 The channel list pane will change automatically as you change the group.
+
 Use "Inspect" (i) to select a group and move the focus to the channel list pane.
 
 ![Channel List](screenshots/channel-list-pane.png)
 
 Properties of the channel are displayed below in the Channel details pane.
 
-By pressing "Switch App" (X) you will swap to the Graph Explorer with the graph list pane highlighted in red:
+#### Social Lounge (Chat Reader)
+
+Use "Read" (r) to read the latest messages of the currently selected channel.
+
+**NOTE**: This is currently slow and will take a couple of seconds to pop up. There is no caching or performance improvements of any kind yet. Furthermore, quite a bit of the parsing logic is still here in mb10 when it should be in the airlock itself. Expect this to improve in the future.
+
+![Channel List](screenshots/channel-reader-pane.png)
 
 #### Graph Explorer
 
@@ -69,6 +76,10 @@ If, as shown in the picture, the node you as inspecting has children, you can "D
 ![Graph Explorer](screenshots/node-list-pane-dive.png)
 
 Use "Pop" (p) to return to the parent node. You can return focus to the graph list pane by pressing (g).
+
+#### Changing your view
+
+By pressing "Switch App" (X) you will swap between the Social Lounge (Reader), the Graph Explorer, and the Group Explorer.
 
 ## Contributing
 

@@ -108,6 +108,11 @@ module MarsBase10
       Curses.close_screen
     end
 
+    def dispose_panes
+      @active_pane = nil
+      @panes = []
+    end
+
     def max_cols
       self.win.maxx
     end
